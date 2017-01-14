@@ -357,9 +357,9 @@ function Install-OSMC {
             }
             
             if ($PSBoundParameters.ContainsKey('CustomSettings')) {
-                $ConfigFile = [ConfigFile]::new($destination)
-                $ConfigFile.SetCustomSettings($CustomSettings)
-                $ConfigFile.Save()
+                $configFile = [ConfigFile]::new($destination)
+                $configFile.SetCustomSettings($CustomSettings)
+                $configFile.Save()
             }
 
             [Utility]::Sync()

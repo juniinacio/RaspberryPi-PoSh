@@ -19,9 +19,9 @@ InModuleScope RaspberryPi-PoSh {
                     disable_overscan = 1
                 }
 
-                $ConfigFile = [ConfigFile]::new($TestDrive)
-                $ConfigFile.SetCustomSettings($customSettings)
-                $ConfigFile.Save()
+                $configFile = [ConfigFile]::new($TestDrive)
+                $configFile.SetCustomSettings($customSettings)
+                $configFile.Save()
 
                 $testFile | Should Contain "^# arm_freq=700$"
                 $testFile | Should Contain "^ hdmi_ignore_cec_init=1$"
@@ -46,9 +46,9 @@ disable_overscan = 0
                     disable_overscan = 1
                 }
 
-                $ConfigFile = [ConfigFile]::new($TestDrive)
-                $ConfigFile.SetCustomSettings($customSettings)
-                $ConfigFile.Save()
+                $configFile = [ConfigFile]::new($TestDrive)
+                $configFile.SetCustomSettings($customSettings)
+                $configFile.Save()
 
                 $testFile | Should Contain "^ arm_freq=1350$"
                 $testFile | Should Contain "^ core_freq=500$"

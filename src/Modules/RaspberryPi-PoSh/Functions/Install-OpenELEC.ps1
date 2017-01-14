@@ -224,9 +224,9 @@ function Install-OpenELEC {
             "boot=LABEL=SYSTEM disk=LABEL=STORAGE quiet" | Set-Content -Path "$destination/cmdline.txt" -Force
 
             if ($PSBoundParameters.ContainsKey('CustomSettings')) {
-                $ConfigFile = [ConfigFile]::new($destination)
-                $ConfigFile.SetCustomSettings($CustomSettings)
-                $ConfigFile.Save()
+                $configFile = [ConfigFile]::new($destination)
+                $configFile.SetCustomSettings($CustomSettings)
+                $configFile.Save()
             }
 
             [Utility]::Sync()
