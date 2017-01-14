@@ -25,7 +25,7 @@
 
     This example shows how to do a typical install of OSMC and specifying some custom settings.
 .EXAMPLE
-    PS /> Install-OSMC -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -BackupFilePath '/home/ubuntu/Kodi/Backup/OpenELEC-20161214183622.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2}
+    PS /> Install-OSMC -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -RestoreFilePath '/home/ubuntu/Kodi/Backup/OpenELEC-20161214183622.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2}
 
     This example shows how to do advanced install of OSMC, specifying some custom settings and also doing a restore from a previously taken backup using the Backup-Raspberry cmdlet.
 .PARAMETER SDDevicePath
@@ -34,8 +34,8 @@
     Path to the OSMC image file.
 .PARAMETER CustomSettings
     Hashtable containing custom settings, these settings will be applied to the config.txt file.
-.PARAMETER BackupFilePath
-    Path to the Raspberry Pi backup file.
+.PARAMETER RestoreFilePath
+    Path to the backup file.
 .PARAMETER USBDevicePath
     Path to the USB device, e.g. /dev/sdc.
 .LINK
@@ -77,14 +77,14 @@ function Install-OSMC {
         [Hashtable]
         $CustomSettings,
 
-        [Parameter(Mandatory = $false, ParameterSetName = 'SD', HelpMessage = 'Path to the Raspberry Pi backup file')]
-        [Parameter(Mandatory = $false, ParameterSetName = 'USB', HelpMessage = 'Path to the Raspberry Pi backup file')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'SD', HelpMessage = 'Path to the backup file')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'USB', HelpMessage = 'Path to the backup file')]
         [ValidateScript({
             Test-Path -Path $_ -PathType Leaf
         })]
         [Alias('BackupFile')]
         [string]
-        $BackupFilePath
+        $RestoreFilePath
     )
     
     begin {
@@ -391,7 +391,7 @@ function Install-OSMC {
 
         try {
 
-            if ($PSBoundParameters.ContainsKey('BackupFilePath')) {
+            if ($PSBoundParameters.ContainsKey('RestoreFilePath')) {
 
                 $destination = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
                 if (Test-Path -Path $destination -PathType Container) {
@@ -417,7 +417,7 @@ function Install-OSMC {
 
                 [Utility]::Mount($device.GetPartition($index), $destination)
 
-                $file = Get-Item -Path $BackupFilePath
+                $file = Get-Item -Path $RestoreFilePath
                 
                 [Tar]::Extract($file.FullName, $destination)
 

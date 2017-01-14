@@ -6,14 +6,14 @@ Installs and configures OSMC
 Install-OSMC    [-SDDevicePath] <String>
                 [-FilePath] <String>
                 [[-CustomSettings] <Hashtable>]
-                [[-BackupFilePath] <String>]
+                [[-RestoreFilePath] <String>]
                 [<CommonParameters>]
 ```
 ```powershell
 Install-OSMC    [-SDDevicePath] <String>
                 [-FilePath] <String>
                 [[-CustomSettings] <Hashtable>]
-                [[-BackupFilePath] <String>]
+                [[-RestoreFilePath] <String>]
                 [-USBDevicePath] <String>
                 [<CommonParameters>]
 ```
@@ -24,7 +24,7 @@ Parameter|Type|Required|Description
 |SDDevicePath|String|True|Path to the SD device, e.g. /dev/mmcblk0.|
 |FilePath|String|True|Path to the OSMC image file.|
 |CustomSettings|Hashtable|False|Hashtable containing the custom settings, this settings will be applied to the config.txt file.|
-|BackupFilePath|String|False|Path to the Raspberry Pi backup file.|
+|RestoreFilePath|String|False|Path to the backup file.|
 |USBDevicePath|String|True|Path to the USB device, e.g. /dev/sdc.|
 
 ### Example 1
@@ -47,6 +47,6 @@ This example shows how to do a typical install of OSMC and specifying some custo
 
 ### Example 4
 ```powershell
-PS /> Install-OSMC -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -BackupFilePath '/home/ubuntu/Kodi/Backup/OpenELEC-20161214183622.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2}
+PS /> Install-OSMC -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -RestoreFilePath '/home/ubuntu/Kodi/Backup/OpenELEC-20161214183622.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2}
 ```
 This example shows how to do advanced install of OSMC, specifying some custom settings and also doing a restore from a previously taken backup using the Backup-Raspberry cmdlet.

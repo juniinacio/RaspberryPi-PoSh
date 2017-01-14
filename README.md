@@ -7,13 +7,11 @@ Welcome to the PowerShell v6 module for provisioning Kodi on the Raspberry Pi.
 
 About
 -----
-RaspberryPi-PoSh is a PowerShell v6 module for provisioning Kodi onto the Raspberry Pi under a Linux-, macOS- based system.
+RaspberryPi-PoSh is a PowerShell v6 module for provisioning Kodi onto the Raspberry Pi under Linux-, macOS- based systems.
 
 The reason I created this module is that I wanted to easily backup my Raspberry Pi, install/re-install it or in case of corruption, do a full restore. I also wanted the possibility to update the device for family and friends.
 
-I sucked with bash scripting, so when Microsoft released PowerShell for Linux, I saw the opportunity to rewrite my existing, non maintainable bash scripts to PowerShell.
-
-Last but not least, I wanted to play around with PowerShell v6 in particular classes.
+I sucked with bash, so when Microsoft released PowerShell for Linux, I saw the opportunity to rewrite my poor bash scripts to PowerShell.
 
 Prerequisites
 -------------
@@ -21,7 +19,7 @@ In order to use this module you need to have PowerShell installed on your system
 
 [download-powershell]: https://github.com/PowerShell/PowerShell
 
-*Notice: This module has been tested under Ubuntu 14.01, Ubuntu 16.04 and CentOS 7.*
+*Notice: This module has been tested under Ubuntu 14.01, Ubuntu 16.04 and CentOS 7 only (feel free to test under macOS).*
 
 New to PowerShell?
 ------------------
@@ -66,4 +64,4 @@ To view all cmdlets, enter:
 Get-Command -Module RaspberryPi-PoSh
 ```
 
-**Notice: Start PowerShell as root when using this module.**
+*Notice: Start PowerShell as root when using the module.*

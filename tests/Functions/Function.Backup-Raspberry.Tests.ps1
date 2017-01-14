@@ -10,7 +10,7 @@ InModuleScope RaspberryPi-PoSh {
 
             $backup = Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath '../Files/sample.backup.tar')
 
-            Install-LibreELEC -SD '/dev/mmcblk0' -FilePath $file.FullName -BackupFilePath $backup.FullName
+            Install-LibreELEC -SD '/dev/mmcblk0' -FilePath $file.FullName -RestoreFilePath $backup.FullName
 
             It "Can create backup from SD" {
                 $timestamp = Get-Date -Format 'yyyyMMddmmss'
@@ -29,7 +29,7 @@ InModuleScope RaspberryPi-PoSh {
 
             $backup = Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath '../Files/sample.backup.tar')
 
-            Install-LibreELEC -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath $file.FullName -BackupFilePath $backup.FullName
+            Install-LibreELEC -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath $file.FullName -RestoreFilePath $backup.FullName
 
             It "Can create backup from USB" {
                 $timestamp = Get-Date -Format 'yyyyMMddmmss'

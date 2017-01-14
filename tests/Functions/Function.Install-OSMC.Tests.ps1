@@ -164,7 +164,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $backup = Get-ChildItem -Path '/home/ubuntu/Backups/' -Filter "OSMC-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1
 
-                Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath $file.FullName -BackupFilePath $backup.FullName
+                Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath $file.FullName -RestoreFilePath $backup.FullName
 
                 $source = "$TestDrive/SYSTEM"
 
@@ -230,7 +230,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $backup = Get-ChildItem -Path '/home/ubuntu/Backups/' -Filter "OSMC-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1
 
-                Install-OSMC -SDDevicePath '/dev/mmcblk0' -USBDevicePath '/dev/sdc' -FilePath $file.FullName -BackupFilePath $backup.FullName
+                Install-OSMC -SDDevicePath '/dev/mmcblk0' -USBDevicePath '/dev/sdc' -FilePath $file.FullName -RestoreFilePath $backup.FullName
 
                 $source = "$TestDrive/SYSTEM"
 

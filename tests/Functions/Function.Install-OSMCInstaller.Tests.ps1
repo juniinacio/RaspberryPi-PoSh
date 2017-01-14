@@ -98,7 +98,7 @@ InModuleScope RaspberryPi-PoSh {
                 Remove-Item -Path $source -Recurse -Force
             }
 
-            It "Can install SD, WiFi enabled" {
+            It "Can install SD and enable WiFi" {
                 $file = Get-ChildItem -Path '/home/ubuntu/Downloads/' -Filter "OSMC_TGT_rbp2*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1
 
                 Install-OSMCInstaller -SD '/dev/mmcblk0' -FilePath $file.FullName -WLAN -KeyType 'WPA/WPA2_PSK' -Key '123456' -SSID  'Network 1'

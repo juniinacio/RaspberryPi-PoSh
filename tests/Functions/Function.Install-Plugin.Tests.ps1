@@ -4,14 +4,14 @@ InModuleScope RaspberryPi-PoSh {
     
     Describe "Install-Plugin" {
 
-        Context "installing on LibreELEC" {
+        Context "installing on LibreELEC/OpenELEC" {
 
             It "Can install SD" {
                 $file = Get-ChildItem -Path '/home/ubuntu/Downloads/' -Filter "LibreELEC-RPi2*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1
 
                 $backup = Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath '../Files/sample.backup.tar')
 
-                Install-LibreELEC -SD '/dev/mmcblk0' -FilePath $file.FullName -BackupFilePath $backup.FullName
+                Install-LibreELEC -SD '/dev/mmcblk0' -FilePath $file.FullName -RestoreFilePath $backup.FullName
 
                 Get-ChildItem -Path '/home/ubuntu/Downloads/' -Filter "plugin.video.*.zip" | Select-Object -ExpandProperty FullName | Install-Plugin -SD '/dev/mmcblk0'
 
@@ -44,7 +44,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $backup = Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath '../Files/sample.backup.tar')
 
-                Install-LibreELEC -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath $file.FullName -BackupFilePath $backup.FullName
+                Install-LibreELEC -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath $file.FullName -RestoreFilePath $backup.FullName
 
                 Get-ChildItem -Path '/home/ubuntu/Downloads/' -Filter "plugin.video.*.zip" | Select-Object -ExpandProperty FullName | Install-Plugin -USB '/dev/sdc'
 

@@ -20,7 +20,7 @@
 
     This example shows how to do a typical install of OpenELEC and specifying some custom settings.
 .EXAMPLE
-    PS /> Install-OpenELEC -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2;gpu_mem=320} -BackupFilePath '/home/ubuntu/Kodi/Backup/OpenELEC-20161210133450.tar'
+    PS /> Install-OpenELEC -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2;gpu_mem=320} -RestoreFilePath '/home/ubuntu/Kodi/Backup/OpenELEC-20161210133450.tar'
 
     This example shows how to do advanced install of OpenELEC, specifying some custom settings and also doing a restore from a previously taken backup using the Backup-Raspberry cmdlet.
 .PARAMETER SDDevicePath
@@ -29,8 +29,8 @@
     Path to the OpenELEC image file.
 .PARAMETER CustomSettings
     Hashtable containing custom settings, these settings will be applied to the config.txt file.
-.PARAMETER BackupFilePath
-    Path to the Raspberry Pi backup file.
+.PARAMETER RestoreFilePath
+    Path to the backup file.
 .PARAMETER USBDevicePath
     Path to the USB device, e.g. /dev/sdc.
 .LINK
@@ -72,14 +72,14 @@ function Install-OpenELEC {
         [Hashtable]
         $CustomSettings,
 
-        [Parameter(Mandatory = $false, ParameterSetName = 'SD', HelpMessage = 'Path to the Raspberry Pi backup file')]
-        [Parameter(Mandatory = $false, ParameterSetName = 'USB', HelpMessage = 'Path to the Raspberry Pi backup file')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'SD', HelpMessage = 'Path to the backup file')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'USB', HelpMessage = 'Path to the backup file')]
         [ValidateScript({
             Test-Path -Path $_ -PathType Leaf
         })]
         [Alias('BackupFile')]
         [string]
-        $BackupFilePath
+        $RestoreFilePath
     )
     
     begin {
@@ -252,7 +252,7 @@ function Install-OpenELEC {
 
         try {
 
-            if ($PSBoundParameters.ContainsKey('BackupFilePath')) {
+            if ($PSBoundParameters.ContainsKey('RestoreFilePath')) {
 
                 $destination = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
                 if (Test-Path -Path $destination -PathType Container) {
@@ -278,7 +278,7 @@ function Install-OpenELEC {
 
                 [Utility]::Mount($device.GetPartition($index), $destination)
 
-                $file = Get-Item -Path $BackupFilePath
+                $file = Get-Item -Path $RestoreFilePath
                 
                 [Tar]::Extract($file.FullName, $destination)
 

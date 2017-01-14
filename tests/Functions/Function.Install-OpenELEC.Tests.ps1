@@ -94,7 +94,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $backup = Get-ChildItem -Path '/home/ubuntu/Backups/' -Filter "OpenELEC-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1
 
-                Install-OpenELEC -SDDevicePath '/dev/mmcblk0' -FilePath $file.FullName -BackupFilePath $backup.FullName
+                Install-OpenELEC -SDDevicePath '/dev/mmcblk0' -FilePath $file.FullName -RestoreFilePath $backup.FullName
 
                 $source = "$TestDrive/STORAGE"
 
@@ -130,7 +130,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $backup = Get-ChildItem -Path '/home/ubuntu/Backups/' -Filter "OpenELEC-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1
 
-                Install-OpenELEC -SDDevicePath '/dev/mmcblk0' -USBDevicePath '/dev/sdc' -FilePath $file.FullName -BackupFilePath $backup.FullName
+                Install-OpenELEC -SDDevicePath '/dev/mmcblk0' -USBDevicePath '/dev/sdc' -FilePath $file.FullName -RestoreFilePath $backup.FullName
 
                 $source = "$TestDrive/STORAGE"
 
