@@ -1,0 +1,9 @@
+# Templates #
+#############
+src/Modules/RaspberryPi-PoSh/**/_CLASS_TEMPLATE.ps1
+src/Modules/RaspberryPi-PoSh/**/_FUNCTION_TEMPLATE.ps1
+
+# Artifacts #
+##########
+artifacts/*.xml
+

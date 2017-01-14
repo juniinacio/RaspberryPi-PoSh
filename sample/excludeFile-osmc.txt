@@ -1,0 +1,24 @@
+./bin
+./dev
+./etc
+./lib
+./lib64
+./media
+./mnt
+./opt
+./proc
+./root
+./run
+./sbin
+./selinux
+./srv
+./sys
+./tmp
+./usr
+./var
+./lost+found
+./walkthrough_completed
+#./home/osmc/Movies
+#./home/osmc/Music
+#./home/osmc/Pictures
+#./home/osmc/TV Shows

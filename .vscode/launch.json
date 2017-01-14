@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "PowerShell",
+            "request": "launch",
+            "program": "${workspaceRoot}/debug.ps1",
+            "args": [],
+            "cwd": "${workspaceRoot}/"
+        },
+        {
+            "name": "Test",
+            "type": "PowerShell",
+            "request": "launch",
+            "program": "${workspaceRoot}/test.ps1",
+            "args": [],
+            "cwd": "${workspaceRoot}/"
+        },
+        {
+            "name": "Build",
+            "type": "PowerShell",
+            "request": "launch",
+            "program": "${workspaceRoot}/build.ps1",
+            "args": [],
+            "cwd": "${workspaceRoot}/"
+        }
+    ]
+}
