@@ -1,5 +1,5 @@
 # Backup-Raspberry
-Creates a backups of your Kodi addons and userdata
+Creates a backup of your Kodi setup.
 
 ## Syntax
 ```powershell

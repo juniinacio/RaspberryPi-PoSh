@@ -21,4 +21,4 @@ Backup & restore cmdlets
 
 Cmdlet|Description
 :-----|:----------
-**[Backup-Raspberry](Backup-Raspberry.md)** |Creates a backups of your Kodi installation.
+**[Backup-Raspberry](Backup-Raspberry.md)** |Creates a backup of your Kodi setup.

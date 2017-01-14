@@ -77,7 +77,7 @@ function Install-OpenELEC {
         [ValidateScript({
             Test-Path -Path $_ -PathType Leaf
         })]
-        [Alias('BackupFile')]
+        [Alias('RestoreFile')]
         [string]
         $RestoreFilePath
     )
