@@ -26,27 +26,27 @@ function Backup-Raspberry {
     [CmdletBinding()]
     Param (
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
-        [Parameter(Mandatory = $true, ParameterSetName='SD', HelpMessage = 'Path to the SD device, e.g. /dev/mmcblk0')]
+        [Parameter(Mandatory = $true, ParameterSetName='SD')]
         [ValidateNotNullOrEmpty()]
         [Alias('SDDevice', 'SD')]
         [string] 
         $SDDevicePath,
 
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
-        [Parameter(Mandatory = $true, ParameterSetName='USB', HelpMessage = 'Path to the USB device, e.g. /dev/sdc')]
+        [Parameter(Mandatory = $true, ParameterSetName='USB')]
         [ValidateNotNullOrEmpty()]
         [Alias('USBDevice', 'USB')]
         [string] 
         $USBDevicePath,
         
-        [Parameter(Mandatory = $false, ParameterSetName='SD', HelpMessage = 'Path to the backup file')]
-        [Parameter(Mandatory = $false, ParameterSetName='USB', HelpMessage = 'Path to the backup file')]
+        [Parameter(Mandatory = $false, ParameterSetName='SD')]
+        [Parameter(Mandatory = $false, ParameterSetName='USB')]
         [Alias('Path')]
         [string]
         $FilePath,
 
-        [Parameter(Mandatory = $false, ParameterSetName='SD', HelpMessage = 'Path to the exclude file. For more information about the -ExcludeFilePath parameter see tar -X command')]
-        [Parameter(Mandatory = $false, ParameterSetName='USB', HelpMessage = 'Path to the exclude file. For more information about the -ExcludeFilePath parameter see tar -X command')]
+        [Parameter(Mandatory = $false, ParameterSetName='SD')]
+        [Parameter(Mandatory = $false, ParameterSetName='USB')]
         [ValidateScript({
             Test-Path -Path $_ -PathType Leaf
         })]

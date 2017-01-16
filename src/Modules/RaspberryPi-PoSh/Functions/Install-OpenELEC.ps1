@@ -43,22 +43,22 @@ function Install-OpenELEC {
     )]
     param (
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
-        [Parameter(Mandatory = $true, ParameterSetName = 'SD', HelpMessage = 'Path to the SD device, e.g. /dev/mmcblk0')]
-        [Parameter(Mandatory = $true, ParameterSetName = 'USB', HelpMessage = 'Path to the SD device, e.g. /dev/mmcblk0')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'SD')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'USB')]
         [ValidateNotNullOrEmpty()]
         [Alias('SDDevice', 'SD')]
         [string]
         $SDDevicePath,
 
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
-        [Parameter(Mandatory = $true, ParameterSetName = 'USB', HelpMessage = 'Path to the USB device, e.g. /dev/sdc')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'USB')]
         [ValidateNotNullOrEmpty()]
         [Alias('USBDevice', 'USB')]
         [string]
         $USBDevicePath,
 
-        [Parameter(Mandatory = $true, ParameterSetName = 'SD', HelpMessage = 'Path to the OpenELEC image file')]
-        [Parameter(Mandatory = $true, ParameterSetName = 'USB', HelpMessage = 'Path to the OpenELEC image file')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'SD')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'USB')]
         [ValidateScript({
             Test-Path -Path $_ -PathType Leaf
         })]
@@ -66,14 +66,14 @@ function Install-OpenELEC {
         [string]
         $FilePath,
 
-        [Parameter(Mandatory = $false, ParameterSetName = 'SD', HelpMessage = 'Hashtable containing custom settings, these settings will be applied to the config.txt file')]
-        [Parameter(Mandatory = $false, ParameterSetName = 'USB', HelpMessage = 'Hashtable containing custom settings, these settings will be applied to the config.txt file')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'SD')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'USB')]
         [ValidateNotNullOrEmpty()]
         [Hashtable]
         $CustomSettings,
 
-        [Parameter(Mandatory = $false, ParameterSetName = 'SD', HelpMessage = 'Path to the backup file')]
-        [Parameter(Mandatory = $false, ParameterSetName = 'USB', HelpMessage = 'Path to the backup file')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'SD')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'USB')]
         [ValidateScript({
             Test-Path -Path $_ -PathType Leaf
         })]

@@ -48,21 +48,21 @@ function Install-OSMCInstaller {
     )]
     param (
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
-        [Parameter(Mandatory = $true, ParameterSetName = 'eth', HelpMessage = 'Path to the SD device, e.g. /dev/mmcblk0')]
-        [Parameter(Mandatory = $true, ParameterSetName = 'wlan', HelpMessage = 'Path to the SD device, e.g. /dev/mmcblk0')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'eth')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'wlan')]
         [ValidateNotNullOrEmpty()]
         [Alias('SDDevice', 'SD')]
         [string]
         $SDDevicePath,
 
-        [Parameter(Mandatory = $false, ParameterSetName = 'eth', HelpMessage = 'Specifies to install to USB')]
-        [Parameter(Mandatory = $false, ParameterSetName = 'wlan', HelpMessage = 'Specifies to install to USB')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'eth')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'wlan')]
         [ValidateNotNullOrEmpty()]
         [switch]
         $USB,
 
-        [Parameter(Mandatory = $true, ParameterSetName = 'eth', HelpMessage = 'Path to the OSMC image file')]
-        [Parameter(Mandatory = $true, ParameterSetName = 'wlan', HelpMessage = 'Path to the OSMC image file')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'eth')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'wlan')]
         [ValidateScript({
             Test-Path -Path $_ -PathType Leaf
         })]
@@ -70,22 +70,22 @@ function Install-OSMCInstaller {
         [string]
         $FilePath,
 
-        [Parameter(Mandatory = $true, ParameterSetName = 'wlan', HelpMessage = 'Specifies that wireless should be used')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'wlan')]
         [ValidateNotNullOrEmpty()]
         [switch]
         $WLAN,
 
-        [Parameter(Mandatory = $false, ParameterSetName = 'wlan', HelpMessage = 'Specifies the encryption type of the wireless network')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'wlan')]
         [ValidateSet('Open_Network', 'WPA/WPA2_PSK', 'WEP')]
         [string]
         $KeyType = 'WPA/WPA2_PSK',
 
-        [Parameter(Mandatory = $false, ParameterSetName = 'wlan', HelpMessage = 'Specifies the password of the wireless network')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'wlan')]
         [ValidateNotNullOrEmpty()]
         [string]
         $Key = '',
 
-        [Parameter(Mandatory = $true, ParameterSetName = 'wlan', HelpMessage = 'Specifies the SSID of the wireless network')]
+        [Parameter(Mandatory = $true, ParameterSetName = 'wlan')]
         [ValidateNotNullOrEmpty()]
         [string]
         $SSID
