@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Installs and configures OpenELEC.
+    Installs and restores OpenELEC.
 .DESCRIPTION
-    This cmdlet installs and configures OpenELEC for the Raspberry Pi. This cmdlet also support settings custom settings into your config.txt file. Using this cmdlet u will be able to both do a SD or USB install of OpenELEC.
+    This cmdlet installs and restores OpenELEC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Using this cmdlet u will be able to both do a SD or USB install of OpenELEC.
     
     The cmdlet supports the OpenELEC tar distribution image file format (OpenELEC-RPi2.arm-<version>.tar).
 
@@ -28,7 +28,7 @@
 .PARAMETER FilePath
     Path to the OpenELEC image file.
 .PARAMETER CustomSettings
-    Hashtable containing custom settings, these settings will be applied to the config.txt file.
+    Hashtable containing custom settings, these settings will be set as settings in the config.txt file.
 .PARAMETER RestoreFilePath
     Path to the backup file.
 .PARAMETER USBDevicePath

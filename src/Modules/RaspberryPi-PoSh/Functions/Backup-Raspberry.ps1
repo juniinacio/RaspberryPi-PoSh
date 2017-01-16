@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Creates a backup of your Kodi setup.
+    Creates a backup of the Kodi installation on the Raspberry Pi.
 .DESCRIPTION
-    This cmdlet creates a backup of your Kodi setup. Use this cmdlet together with the Install-LibreELEC, Install-OpenELEC or Install-OSMC cmdlets to
+    This cmdlet Creates a backup of the Kodi installation on the Raspberry Pi. Use this cmdlet together with the Install-LibreELEC, Install-OpenELEC or Install-OSMC cmdlets to
     restore your Raspberry Pi in case of an emergency or new install.
 
 .EXAMPLE

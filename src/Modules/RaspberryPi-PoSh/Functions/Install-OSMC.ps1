@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Installs and configures OSMC.
+    Installs and restores OSMC.
 .DESCRIPTION
-    This cmdlet installs and configures OSMC for the Raspberry Pi. This cmdlet also support settings custom settings into your config.txt file. Using this cmdlet u will be able to do both a SD or USB install of OSMC.
+    This cmdlet installs and restores OSMC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Using this cmdlet u will be able to do both a SD or USB install of OSMC.
     
     The cmdlet supports the OSMC tar distribution image file format (OSMC_TGT_rbp2_20161128.img.gz).
 
@@ -31,9 +31,9 @@
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
 .PARAMETER FilePath
-    Path to the OSMC image file.
+    Path to the OSMC image file. Please keep the original name as the cmdlet depends on it.
 .PARAMETER CustomSettings
-    Hashtable containing custom settings, these settings will be applied to the config.txt file.
+    Hashtable containing custom settings, these settings will be set as settings in the config.txt file.
 .PARAMETER RestoreFilePath
     Path to the backup file.
 .PARAMETER USBDevicePath

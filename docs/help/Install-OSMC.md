@@ -1,20 +1,20 @@
 # Install-OSMC
-Installs and configures OSMC
+Installs and restores OSMC
 
 ## Syntax
 ```powershell
-Install-OSMC    [-SDDevicePath] <String>
-                [-FilePath] <String>
-                [[-CustomSettings] <Hashtable>]
-                [[-RestoreFilePath] <String>]
+Install-OSMC    -SDDevicePath <String>
+                -FilePath <String>
+                [-CustomSettings <Hashtable>]
+                [-RestoreFilePath <String>]
                 [<CommonParameters>]
 ```
 ```powershell
-Install-OSMC    [-SDDevicePath] <String>
-                [-FilePath] <String>
-                [[-CustomSettings] <Hashtable>]
-                [[-RestoreFilePath] <String>]
-                [-USBDevicePath] <String>
+Install-OSMC    -SDDevicePath <String>
+                -USBDevicePath <String>
+                -FilePath <String>
+                [-CustomSettings <Hashtable>]
+                [-RestoreFilePath <String>]
                 [<CommonParameters>]
 ```
 
@@ -22,7 +22,7 @@ Install-OSMC    [-SDDevicePath] <String>
 Parameter|Type|Required|Description
 ---------|----|--------|-----------
 |SDDevicePath|String|True|Path to the SD device, e.g. /dev/mmcblk0.|
-|FilePath|String|True|Path to the OSMC image file.|
+|FilePath|String|True|Please keep the original name as the cmdlet depends on it.|
 |CustomSettings|Hashtable|False|Hashtable containing the custom settings, this settings will be applied to the config.txt file.|
 |RestoreFilePath|String|False|Path to the backup file.|
 |USBDevicePath|String|True|Path to the USB device, e.g. /dev/sdc.|

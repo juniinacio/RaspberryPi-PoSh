@@ -27,7 +27,7 @@ Parameter|Type|Required|Description
 |SDDeviceFilePath|String|True|Path to store the SD device image file, e.g. /home/ubuntu/Images/LibreELEC-SD-Image.img.|
 |SDDeviceSize|Int64|True|SD image file size in bytes. This must be equal to or less than the actual size of your SD device.|
 |FilePath|String|True|Path to the LibreELEC image file.|
-|CustomSettings|Hashtable|False|Hashtable containing custom settings, these settings will be applied to the config.txt file.|
+|CustomSettings|Hashtable|False|Hashtable containing custom settings, these settings will be set as settings in the config.txt file.|
 |RestoreFilePath|String|False|Path to the backup file.|
 |USBDeviceFilePath|String|True|Path to store the USB device image file, e.g. /home/ubuntu/Images/LibreELEC-USB-Image.img.|
 |USBDeviceSize|Int64|True|USB image file size in bytes. This must be equal to or less than the actual size of your USB device.|

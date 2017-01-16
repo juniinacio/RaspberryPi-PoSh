@@ -1,21 +1,21 @@
 # Install-LibreELEC
-Installs and configures LibreELEC
+Installs and restores LibreELEC
 
 ## Syntax
 ```powershell
-Install-LibreELEC [-SDDevicePath] <String>
-                  [-FilePath] <String> 
-                  [[-CustomSettings] <Hashtable>]
-                  [[-RestoreFilePath] <String>]
-                  [<CommonParameters>]
+Install-LibreELEC   -SDDevicePath <String>
+                    -FilePath <String>
+                    [-CustomSettings <Hashtable>]
+                    [-RestoreFilePath <String>]
+                    [<CommonParameters>]
 ```
 ```powershell
-Install-LibreELEC [-SDDevicePath] <String>
-                  [-FilePath] <String>
-                  [[-CustomSettings] <Hashtable>]
-                  [[-RestoreFilePath] <String>]
-                  [-USBDevicePath] <String>
-                  [<CommonParameters>]
+Install-LibreELEC   -SDDevicePath <String>
+                    -USBDevicePath <String>
+                    -FilePath <String>
+                    [-CustomSettings <Hashtable>]
+                    [-RestoreFilePath <String>]
+                    [<CommonParameters>]
 ```
 
 ### Parameters
@@ -23,7 +23,7 @@ Parameter|Type|Required|Description
 ---------|----|--------|-----------
 |SDDevicePath|String|True|Path to the SD device, e.g. /dev/mmcblk0.|
 |FilePath|String|True|Path to the LibreELEC image file.|
-|CustomSettings|Hashtable|False|Hashtable containing custom settings, these settings will be applied to the config.txt file.|
+|CustomSettings|Hashtable|False|Hashtable containing custom settings, these settings will be set as settings in the config.txt file.|
 |RestoreFilePath|String|False|Path to the backup file.|
 |USBDevicePath|String|True|Path to the USB device, e.g. /dev/sdc.|
 

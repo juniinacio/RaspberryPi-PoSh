@@ -22,7 +22,7 @@
 .PARAMETER FilePath
     Path to the LibreELEC image file.
 .PARAMETER CustomSettings
-    Hashtable containing custom settings, these settings will be applied to the config.txt file.
+    Hashtable containing custom settings, these settings will be set as settings in the config.txt file.
 .PARAMETER RestoreFilePath
     Path to the backup file.
 .PARAMETER USBDeviceFilePath

@@ -1,20 +1,19 @@
 # Backup-Raspberry
-Creates a backup of your Kodi setup.
+Creates a backup of the Kodi installation on the Raspberry Pi.
 
 ## Syntax
 ```powershell
-Backup-Raspberry [-SDDevicePath] <String>
-              [[-FilePath] <String>]
-              [[-ExcludeFilePath] <String>]
-              [<CommonParameters>]
+Backup-Raspberry    -SDDevicePath <String>
+                    [-FilePath <String>]
+                    [-ExcludeFilePath <String>]
+                    [<CommonParameters>]
 ```
 
 ```powershell
-Backup-Raspberry [-USBDevicePath] <String>
-              [[-FilePath] <String>]
-              [[-ExcludeFilePath]
-              <String>]
-              [<CommonParameters>]
+Backup-Raspberry    -USBDevicePath <String>
+                    [-FilePath <String>]
+                    [-ExcludeFilePath <String>]
+                    [<CommonParameters>]
 ```
 
 ### Parameters

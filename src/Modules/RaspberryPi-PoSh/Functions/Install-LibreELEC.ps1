@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Installs and configures LibreELEC.
+    Installs and restores LibreELEC.
 .DESCRIPTION
-    This cmdlet installs and configures LibreELEC for the Raspberry Pi. This cmdlet also support settings custom settings into your config.txt file. Using this cmdlet u will be able to both do a SD or USB install of LibreELEC.
+    This cmdlet installs and restores LibreELEC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Using this cmdlet u will be able to both do a SD or USB install of LibreELEC.
     
     The cmdlet supports two of the three types of LibreELEC distribution image file formats. The first being the .tar (LibreELEC-RPi2.arm-<version>.tar) and the noobs archive format (LibreELEC-RPi2.arm-<version>-noobs.tar.
 
@@ -26,9 +26,9 @@
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
 .PARAMETER FilePath
-    Path to the LibreELEC image file.
+    Path to the LibreELEC image file. Please keep the original name as the cmdlet depends on it.
 .PARAMETER CustomSettings
-    Hashtable containing custom settings, these settings will be applied to the config.txt file.
+    Hashtable containing custom settings, these settings will be set as settings in the config.txt file.
 .PARAMETER RestoreFilePath
     Path to the backup file.
 .PARAMETER USBDevicePath
