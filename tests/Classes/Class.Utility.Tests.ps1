@@ -47,6 +47,19 @@ InModuleScope RaspberryPi-PoSh {
             }
         }
 
+        Context "creating disk images" {
+
+            It "Can create 400mb image" {
+                $testFile = Join-Path -Path $TestDrive -ChildPath 'test.img'
+                
+                [Utility]::DD('/dev/zero', $testFile, 1048576, $(400mb/1048576))
+
+                $file = Get-Item -Path $testFile
+
+                $file.Length | Should Be 400mb
+            }
+        }
+
         Context "locating commands" {
 
             It "Can locate lsblk" {
@@ -96,6 +109,10 @@ InModuleScope RaspberryPi-PoSh {
 
             It "Can locate sync" {
                 [Utility]::Which('sync') | Should Match '/sync$'
+            }
+
+            It "Can locate dd" {
+                [Utility]::Which('dd') | Should Match '/dd$'
             }
         }
     }

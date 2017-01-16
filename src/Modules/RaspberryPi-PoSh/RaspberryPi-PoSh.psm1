@@ -108,26 +108,23 @@ class DeviceService {
     static [System.Collections.ArrayList] GetDevices ([bool] $Force = $false) {
 
         $lsblkcmd = 'lsblk'
-
-        [Logger]::LogMessage("Enum block devices...", [EventSeverity]::Verbose)
         
-        $output = ExecCmd -Command $lsblkcmd -ArgumentsList '-a', '-J', '-o', 'name,fstype,size,mountpoint,type,label,hotplug' | ConvertFrom-Json
+        $output = ExecCmd -Command $lsblkcmd -ArgumentsList '-a', '-J', '-o', 'name,fstype,size,mountpoint,type,label,hotplug'
+        
+        [Logger]::LogMessage($output, [EventSeverity]::Debug)
+
+        $output = $output | ConvertFrom-Json
 
         $blockdevices = [System.Collections.ArrayList]::New()
 
         foreach ($b in $output.blockdevices) {
             if (($b.hotplug -eq 0) -and ($Force -eq $false) -and ($b.name -notmatch 'loop\d+$')) {
-                [Logger]::LogMessage(('Skip device ''{0}'', hotplug flag is set to ''{1}''...' -f $b.name, $b.hotplug), [EventSeverity]::Verbose)
                 continue;
             }
-            
-            [Logger]::LogMessage(('Found device ''{0}''...' -f $b.name), [EventSeverity]::Verbose)
             
             $device = [Device]::new($b.name, $b.fstype, $b.size, $b.mountpoint, $b.type, $b.label, $b.hotplug)
 
             foreach ($c in $b.children) {
-                [Logger]::LogMessage(('Found device ''{0}''...' -f $c.name), [EventSeverity]::Verbose)
-
                 $partition = [Device]::new($c.name, $c.fstype, $c.size, $c.mountpoint, $c.type, $c.label, $c.hotplug)
                 $Partition.SetParent($device)
                 $device.SetPartition($partition)
@@ -161,10 +158,16 @@ class Utility {
     static [void] Mount ([Device] $Device, [string] $Destination) {
         if ($Device.Type -ne 'disk') {
             if (-not $Device.Umount()) {
-                if ($Device.FSType -eq 'vfat') {
-                    ExecCmd -Command 'mount' -ArgumentsList '-t', $Device.FSType, '-o', 'umask=000', $Device.GetPath(), $Destination
+                if ($Device.Type -eq 'loop') {
+                    ExecCmd -Command 'mount' -ArgumentsList $Device.GetPath(), $Destination
+                } elseif ($Device.Type -eq 'part') {
+                    if ($Device.FSType -eq 'vfat') {
+                        ExecCmd -Command 'mount' -ArgumentsList '-t', $Device.FSType, '-o', 'umask=000', $Device.GetPath(), $Destination
+                    } else {
+                        ExecCmd -Command 'mount' -ArgumentsList '-t', $Device.FSType, $Device.GetPath(), $Destination
+                    }
                 } else {
-                    ExecCmd -Command 'mount' -ArgumentsList '-t', $Device.FSType, $Device.GetPath(), $Destination
+
                 }
             }
         }
@@ -190,6 +193,10 @@ class Utility {
         $output = ExecCmd -Command 'which' -ArgumentsList $Command
 
         return $output.Trim()
+    }
+
+    static [void] DD([string] $If, [string]$Of, [long] $Bs, [long] $Count) {
+        ExecCmd -Command 'dd' -ArgumentsList "if=$If", "of=$Of", "bs=$Bs", "count=$Count", 'status=none'
     }
 }
 
@@ -343,11 +350,11 @@ class Losetup {
             throw "Cannot find path '$FilePath' because it does not exist."
         }
 
-        ExecCmd -Command 'losetup' -ArgumentsList $DevicePath, $FilePath -UseSudo
+        ExecCmd -Command 'losetup' -ArgumentsList $DevicePath, $FilePath
     }
 
     static [void] Detach ([string] $DevicePath) {
-        ExecCmd -Command 'losetup' -ArgumentsList '-d', $DevicePath -UseSudo
+        ExecCmd -Command 'losetup' -ArgumentsList '-d', $DevicePath
     }
 }
 
