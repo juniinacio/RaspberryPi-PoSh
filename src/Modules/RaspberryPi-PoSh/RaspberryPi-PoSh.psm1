@@ -436,51 +436,6 @@ class PreseedFile {
     }
 }
 
-#----------------------------------------------------------------------------------------------------------------------
-# Functions
-
-function ExecCmd {
-    [CmdletBinding()]
-    Param (
-        # Param1 help description
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [Alias('Cmd')]
-        [string]
-        $Command,
-        
-        # Param2 help description
-        [Parameter(Mandatory = $false, Position = 1)]
-        [ValidateNotNullOrEmpty()]
-        [String[]]
-        $ArgumentsList,
-
-        # Param3 help description
-        [Parameter(Mandatory = $false, Position = 2)]
-        [Switch]
-        $UseSudo
-    )
-    
-    $sudocmd = $global:sudocmd
-
-    if ($UseSudo.IsPresent) {
-        [Logger]::LogMessage("Running: $sudocmd $Command $ArgumentsList", [EventSeverity]::Verbose)
-        $outputput = & $sudocmd $Command $ArgumentsList
-    } else {
-        [Logger]::LogMessage("Running: $Command $ArgumentsList", [EventSeverity]::Verbose)
-        $outputput = & $Command $ArgumentsList
-    }
-
-    if ($LastExitCode -ne 0) {
-        $e = New-Object -TypeName 'System.InvalidOperationException' -ArgumentList $outputput.Exception.Message
-        throw $e
-    } else {
-        [Logger]::LogMessage("LastExitCode: $LastExitCode", [EventSeverity]::Verbose)
-    }
-
-    $outputput
-}
-
 class ConfigFile {
 
     [System.Collections.ArrayList] $Content
@@ -530,6 +485,50 @@ class ConfigFile {
     [void] Save () {
         Set-Content -Path $this.Path -Value $this.Content -Force
     }
+}
+
+#----------------------------------------------------------------------------------------------------------------------
+# Functions
+
+function ExecCmd {
+    [CmdletBinding()]
+    Param (
+        # Param1 help description
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('Cmd')]
+        [string]
+        $Command,
+        
+        # Param2 help description
+        [Parameter(Mandatory = $false, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [String[]]
+        $ArgumentsList,
+
+        # Param3 help description
+        [Parameter(Mandatory = $false, Position = 2)]
+        [Switch]
+        $UseSudo
+    )
+    
+    $sudocmd = $global:sudocmd
+
+    if ($UseSudo.IsPresent) {
+        [Logger]::LogMessage("Running: $sudocmd $Command $ArgumentsList", [EventSeverity]::Verbose)
+        $output = & $sudocmd $Command $ArgumentsList
+    } else {
+        [Logger]::LogMessage("Running: $Command $ArgumentsList", [EventSeverity]::Verbose)
+        $output = & $Command $ArgumentsList
+    }
+
+    if ($LastExitCode -ne 0) {
+        throw $output
+    } else {
+        [Logger]::LogMessage("LastExitCode: $LastExitCode", [EventSeverity]::Verbose)
+    }
+
+    $output
 }
 
 #----------------------------------------------------------------------------------------------------------------------
