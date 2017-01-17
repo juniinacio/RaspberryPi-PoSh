@@ -2,29 +2,39 @@
 .SYNOPSIS
     Installs and restores OpenELEC.
 .DESCRIPTION
-    This cmdlet installs and restores OpenELEC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Using this cmdlet u will be able to both do a SD or USB install of OpenELEC.
+    This cmdlet installs and optionally restores OpenELEC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Use this cmdlet to install OpenELEC to SD or USB.
     
     The cmdlet supports the OpenELEC tar distribution image file format (OpenELEC-RPi2.arm-<version>.tar).
 
     The cmdlet can do installs for all Raspberry Pi versions.
+
+    The cmdlet also supports installing to loop devices, to do this you have to prepare an empty image file before executing the cmdlet and pointing it to the image file using either the SDDeviceFilePath or the USBDeviceFilePath dynamic parameter. The SDDeviceFilePath or USBDeviceFilePath parameters are only available when either or both the SDDevicePath or USBDevicePath parameters are pointing to a loop back device, see the examples for more information about this functionality.
+
+    Note that when doing image provisioning the SDDevicePath or USBDevicePath must point to a free loop device.
 .EXAMPLE
-    PS /> Install-OpenELEC -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar'
+    PS /> Install-OpenELEC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar'
 
     This example shows how to do a typical install of OpenELEC.
 .EXAMPLE
-    PS /> Install-OpenELEC -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar'
+    PS /> Install-OpenELEC -SDDevicePath '/dev/mmcblk0' -USB '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar'
 
     This example shows how to do an install to USB of OpenELEC.
 .EXAMPLE
-    PS /> Install-OpenELEC -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2;gpu_mem=320}
+    PS /> Install-OpenELEC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2;gpu_mem=320}
 
     This example shows how to do a typical install of OpenELEC and specifying some custom settings.
 .EXAMPLE
-    PS /> Install-OpenELEC -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2;gpu_mem=320} -RestoreFilePath '/home/ubuntu/Kodi/Backup/OpenELEC-20161210133450.tar'
+    PS /> Install-OpenELEC -SDDevicePath '/dev/mmcblk0' -USB '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2;gpu_mem=320} -RestoreFilePath '/home/ubuntu/Kodi/Backup/OpenELEC-20161210133450.tar'
 
     This example shows how to do advanced install of OpenELEC, specifying some custom settings and also doing a restore from a previously taken backup using the Backup-Raspberry cmdlet.
+.EXAMPLE
+    PS /> Install-OpenELEC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar' -SDDeviceFilePath '/home/ubuntu/Images/OpenELEC-4gb-SD-20170117.img'
+
+    This example shows how to install OpenELEC to a loop device.
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
+.PARAMETER SDDeviceFilePath
+    Path to the SD device image file, /home/ubuntu/Images/OpenELEC-4gb-SD-20170117.img.
 .PARAMETER FilePath
     Path to the OpenELEC image file.
 .PARAMETER CustomSettings
@@ -33,6 +43,8 @@
     Path to the backup file.
 .PARAMETER USBDevicePath
     Path to the USB device, e.g. /dev/sdc.
+.PARAMETER USBDeviceFilePath
+    Path to the USB device image file, /home/ubuntu/Images/OpenELEC-16gb-USB-20170117.img.
 .LINK
     https://haydenjames.io/raspberry-pi-2-overclock/
     https://haydenjames.io/raspberry-pi-3-overclock/
@@ -46,14 +58,14 @@ function Install-OpenELEC {
         [Parameter(Mandatory = $true, ParameterSetName = 'SD')]
         [Parameter(Mandatory = $true, ParameterSetName = 'USB')]
         [ValidateNotNullOrEmpty()]
-        [Alias('SDDevice', 'SD')]
+        [Alias('SD')]
         [string]
         $SDDevicePath,
 
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
         [Parameter(Mandatory = $true, ParameterSetName = 'USB')]
         [ValidateNotNullOrEmpty()]
-        [Alias('USBDevice', 'USB')]
+        [Alias('USB')]
         [string]
         $USBDevicePath,
 
@@ -81,6 +93,58 @@ function Install-OpenELEC {
         [string]
         $RestoreFilePath
     )
+
+    dynamicParam {
+        $dictionary = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
+        
+        if ($SDDevicePath -match '^/dev/loop\d{1}$') {
+            $parameterName = 'SDDeviceFilePath'
+
+            $attributes = [Parameter]::new()
+            $attributes.Mandatory = $true
+            $attributes.ParameterSetName = '__AllParameterSets'
+
+            $attributeCollection = [Collections.ObjectModel.Collection[Attribute]]@(
+                $attributes
+                [ValidateScript]::new({
+                    Test-Path -Path $_ -PathType Leaf
+                })
+            )
+
+            $parameter = [Management.Automation.RuntimeDefinedParameter]::new(
+                $parameterName,
+                [string],
+                $attributeCollection
+            )
+
+            $dictionary.Add($parameterName, $parameter)
+        }
+
+        if ($USBDevicePath -match '^/dev/loop\d{1}$') {
+            $parameterName = 'USBDeviceFilePath'
+
+            $attributes = [Parameter]::new()
+            $attributes.Mandatory = $true
+            $attributes.ParameterSetName = 'USB'
+
+            $attributeCollection = [Collections.ObjectModel.Collection[Attribute]]@(
+                $attributes
+                [ValidateScript]::new({
+                    Test-Path -Path $_ -PathType Leaf
+                })
+            )
+
+            $parameter = [Management.Automation.RuntimeDefinedParameter]::new(
+                $parameterName,
+                [string],
+                $attributeCollection
+            )
+
+            $dictionary.Add($parameterName, $parameter)
+        }
+
+        $dictionary
+    }
     
     begin {
 
@@ -91,10 +155,20 @@ function Install-OpenELEC {
                 throw "Cannot find device '$SDDevicePath' because it does not exist."
             }
 
+            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
+                [Losetup]::Attach($SDDevice, $PSBoundParameters.SDDeviceFilePath)
+                $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
+            }
+
             if ($PSCmdlet.ParameterSetName -eq 'USB') {
                 $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
                 if ($USBDevice -eq $null) {
                     throw "Cannot find device '$USBDevicePath' because it does not exist."
+                }
+
+                if ($PSBoundParameters.ContainsKey('USBDeviceFilePath')) {
+                    [Losetup]::Attach($USBDevice, $PSBoundParameters.USBDeviceFilePath)
+                    $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
                 }
 
                 [Utility]::Umount($USBDevice)
@@ -158,6 +232,14 @@ function Install-OpenELEC {
                 if ($USBDevice.GetPartition(0).Umount()) {
                     [Utility]::Umount($USBDevice.GetPartition(0))
                 }
+
+                if ($PSBoundParameters.ContainsKey('USBDeviceFilePath')) {
+                    [Losetup]::Detach($USBDevice)
+                }
+            }
+
+            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
+                [Losetup]::Detach($SDDevice)
             }
 
         } catch {
@@ -189,6 +271,12 @@ function Install-OpenELEC {
             New-Item -Path $destination -ItemType Directory | Out-Null
 
             $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
+
+            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
+                [Losetup]::Attach($SDDevice, $PSBoundParameters.SDDeviceFilePath)
+                $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
+            }
+
             if ($SDDevice.GetPartition(0).Umount()) {
                 [Utility]::Umount($SDDevice.GetPartition(0))
             }
@@ -236,6 +324,10 @@ function Install-OpenELEC {
                 [Utility]::Umount($SDDevice.GetPartition(0))
             }
 
+            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
+                [Losetup]::Detach($SDDevice)
+            }
+
             Remove-Item -Path $destination -Recurse -Force
 
         } catch {
@@ -264,9 +356,16 @@ function Install-OpenELEC {
                 if ($PSCmdlet.ParameterSetName -eq 'SD') {
                     $devicePath = $SDDevicePath
                     $index = 1
+                    $key = 'SDDeviceFilePath'
                 } else {
                     $devicePath = $USBDevicePath
                     $index = 0
+                    $key = 'USBDeviceFilePath'
+                }
+
+                if ($PSBoundParameters.ContainsKey($key)) {
+                    $device = [DeviceService]::GetDevice($devicePath)
+                    [Losetup]::Attach($device, $PSBoundParameters.Item($key))
                 }
 
                 $device = [DeviceService]::GetDevice($devicePath)
@@ -287,6 +386,10 @@ function Install-OpenELEC {
                 $device = [DeviceService]::GetDevice($devicePath)
                 if ($device.GetPartition($index).Umount()) {
                     [Utility]::Umount($device.GetPartition($index))
+                }
+
+                if ($PSBoundParameters.ContainsKey($key)) {
+                    [Losetup]::Detach($device)
                 }
 
                 Remove-Item -Path $destination -Recurse -Force
