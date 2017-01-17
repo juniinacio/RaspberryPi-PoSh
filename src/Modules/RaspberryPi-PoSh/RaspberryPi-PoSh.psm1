@@ -118,7 +118,7 @@ class DeviceService {
         $blockdevices = [System.Collections.ArrayList]::New()
 
         foreach ($b in $output.blockdevices) {
-            if (($b.hotplug -eq 0) -and ($Force -eq $false) -and ($b.name -notmatch 'loop\d+$')) {
+            if (($b.hotplug -eq 0) -and ($Force -eq $false) -and ($b.name -notmatch 'loop\d{1}$')) {
                 continue;
             }
             
