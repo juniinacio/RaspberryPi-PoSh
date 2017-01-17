@@ -29,7 +29,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $device = [DeviceService]::GetDevice($devicePath)
 
-                [Losetup]::Attach($device.GetPath(), "/$TestDrive/LibreELEC-SD-Image.img")
+                [Losetup]::Attach($device, "/$TestDrive/LibreELEC-SD-Image.img")
 
                 [Partprobe]::Probe($device)
 
@@ -58,7 +58,7 @@ InModuleScope RaspberryPi-PoSh {
                     [Utility]::Umount($device.GetPartition(0))
                 }
 
-                [Losetup]::Detach($device.GetPath())
+                [Losetup]::Detach($device)
 
                 Remove-Item -Path $source -Recurse -Force
             }
@@ -82,7 +82,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $device = [DeviceService]::GetDevice($devicePath)
 
-                [Losetup]::Attach($device.GetPath(), "/$TestDrive/LibreELEC-SD-Image.img")
+                [Losetup]::Attach($device, "/$TestDrive/LibreELEC-SD-Image.img")
 
                 [Partprobe]::Probe($device)
 
@@ -92,13 +92,13 @@ InModuleScope RaspberryPi-PoSh {
                 ($device.GetPartition(0)).FSType | Should Be "vfat"
                 $device.GetPartition(1) | Should Be $null
 
-                [Losetup]::Detach($device.GetPath())
+                [Losetup]::Detach($device)
 
                 $devicePath = [Losetup]::Lookup()
 
                 $device = [DeviceService]::GetDevice($devicePath)
 
-                [Losetup]::Attach($device.GetPath(), "/$TestDrive/LibreELEC-USB-Image.img")
+                [Losetup]::Attach($device, "/$TestDrive/LibreELEC-USB-Image.img")
 
                 [Partprobe]::Probe($device)
 
@@ -108,7 +108,7 @@ InModuleScope RaspberryPi-PoSh {
                 ($device.GetPartition(0)).FSType | Should Be "ext4"
                 $device.GetPartition(1) | Should Be $null
 
-                [Losetup]::Detach($device.GetPath())
+                [Losetup]::Detach($device)
             }
         }
 
@@ -128,7 +128,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $device = [DeviceService]::GetDevice($devicePath)
 
-                [Losetup]::Attach($device.GetPath(), "/$TestDrive/LibreELEC-SD-Image.img")
+                [Losetup]::Attach($device, "/$TestDrive/LibreELEC-SD-Image.img")
 
                 [Partprobe]::Probe($device)
 
@@ -149,7 +149,7 @@ InModuleScope RaspberryPi-PoSh {
                     [Utility]::Umount($device.GetPartition(1))
                 }
 
-                [Losetup]::Detach($device.GetPath())
+                [Losetup]::Detach($device)
 
                 Remove-Item -Path $source -Recurse -Force
             }

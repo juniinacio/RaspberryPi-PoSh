@@ -345,16 +345,16 @@ class Losetup {
         return $output.Trim()
     }
 
-    static [void] Attach ([string] $DevicePath, [string] $FilePath) {
+    static [void] Attach ([Device] $Device, [string] $FilePath) {
         if (-not (Test-Path -Path $FilePath -PathType Leaf)) {
             throw "Cannot find path '$FilePath' because it does not exist."
         }
 
-        ExecCmd -Command 'losetup' -ArgumentsList $DevicePath, $FilePath
+        ExecCmd -Command 'losetup' -ArgumentsList $Device.GetPath(), $FilePath
     }
 
-    static [void] Detach ([string] $DevicePath) {
-        ExecCmd -Command 'losetup' -ArgumentsList '-d', $DevicePath
+    static [void] Detach ([Device] $Device) {
+        ExecCmd -Command 'losetup' -ArgumentsList '-d', $Device.GetPath()
     }
 }
 

@@ -94,7 +94,7 @@ function New-LibreELECImage {
 
             $SD = [DeviceService]::GetDevice($SDPath)
 
-            [Losetup]::Attach($SD.GetPath(), $file.FullName)
+            [Losetup]::Attach($SD, $file.FullName)
 
             [Parted]::MKLabel($SD, 'msdos')
 
@@ -131,7 +131,7 @@ function New-LibreELECImage {
 
                 $USB = [DeviceService]::GetDevice($USBPath)
 
-                [Losetup]::Attach($USB.GetPath(), $file.FullName)
+                [Losetup]::Attach($USB, $file.FullName)
 
                 [Parted]::MKLabel($USB, 'msdos')
 
@@ -147,10 +147,10 @@ function New-LibreELECImage {
 
                 [mkfs]::Ext4($USB.GetPartition(0), 'STORAGE')
 
-                [Losetup]::Detach($USB.GetPath())
+                [Losetup]::Detach($USB)
             }
 
-            [Losetup]::Detach($SD.GetPath())
+            [Losetup]::Detach($SD)
 
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
@@ -186,7 +186,7 @@ function New-LibreELECImage {
 
             $SD = [DeviceService]::GetDevice($SDPath)
 
-            [Losetup]::Attach($SD.GetPath(), $file.FullName)
+            [Losetup]::Attach($SD, $file.FullName)
 
             [Partprobe]::Probe($SD)
 
@@ -238,7 +238,7 @@ function New-LibreELECImage {
                 [Utility]::Umount($SD.GetPartition(0))
             }
 
-            [Losetup]::Detach($SD.GetPath())
+            [Losetup]::Detach($SD)
 
             Remove-Item -Path $destination -Recurse -Force
 
@@ -276,7 +276,7 @@ function New-LibreELECImage {
 
                 $device = [DeviceService]::GetDevice($devicePath)
 
-                [Losetup]::Attach($device.GetPath(), $file.FullName)
+                [Losetup]::Attach($device, $file.FullName)
 
                 [Partprobe]::Probe($device)
 
@@ -295,7 +295,7 @@ function New-LibreELECImage {
                     [Utility]::Umount($device.GetPartition($index))
                 }
 
-                [Losetup]::Detach($device.GetPath())
+                [Losetup]::Detach($device)
 
                 Remove-Item -Path $destination -Recurse -Force
             }

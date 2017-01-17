@@ -216,7 +216,7 @@ function Install-OSMC {
 
             $loop = [DeviceService]::GetDevice($loopPath)
 
-            [Losetup]::Attach($loop.GetPath(), $file.FullName)
+            [Losetup]::Attach($loop, $file.FullName)
 
             [Partprobe]::Probe($loop)
 
@@ -262,7 +262,7 @@ function Install-OSMC {
                 [Utility]::Umount($loop.GetPartition(0))
             }
 
-            [Losetup]::Detach($loop.GetPath())
+            [Losetup]::Detach($loop)
 
             $device = [DeviceService]::GetDevice($devicePath)
             if ($device.GetPartition($index).Umount()) {

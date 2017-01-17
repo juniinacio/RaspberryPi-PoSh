@@ -14,6 +14,9 @@ InModuleScope RaspberryPi-PoSh {
         }
 
         Context "attach/detach loop devices" {
+            $devicePath = [Losetup]::Lookup()
+
+            $device = [DeviceService]::GetDevice($devicePath)
 
             It "Can attach loop device" {
                 Mock Test-Path { return $true }
@@ -21,7 +24,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 $file = Join-Path -Path $PSScriptRoot -ChildPath '../TestsFiles/sample.img'
                 
-                [Losetup]::Attach('/dev/loop0', $file)
+                [Losetup]::Attach($device, $file)
 
                 Assert-MockCalled ExecCmd -ParameterFilter {    $Command -eq 'losetup' `
                                                                 -and $ArgumentsList -contains '/dev/loop0' `
@@ -32,7 +35,7 @@ InModuleScope RaspberryPi-PoSh {
             It "Can detach loop device" {
                 Mock ExecCmd {}
 
-                [Losetup]::Detach('/dev/loop0')
+                [Losetup]::Detach($device)
 
                 Assert-MockCalled ExecCmd -ParameterFilter {    $Command -eq 'losetup' `
                                                                 -and $ArgumentsList -contains '-d' `

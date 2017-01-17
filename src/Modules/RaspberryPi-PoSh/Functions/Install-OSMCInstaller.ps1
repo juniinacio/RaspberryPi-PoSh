@@ -170,7 +170,7 @@ function Install-OSMCInstaller {
 
             $loop = [DeviceService]::GetDevice($loopPath)
 
-            [Losetup]::Attach($loop.GetPath(), $file.FullName)
+            [Losetup]::Attach($loop, $file.FullName)
 
             [Partprobe]::Probe($loop)
 
@@ -196,7 +196,7 @@ function Install-OSMCInstaller {
                 [Utility]::Umount($loop.GetPartition(0))
             }
 
-            [Losetup]::Detach($loop.GetPath())
+            [Losetup]::Detach($loop)
 
             $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
             if ($SDDevice.GetPartition(0).Umount()) {
