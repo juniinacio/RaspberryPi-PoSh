@@ -22,12 +22,12 @@ InModuleScope RaspberryPi-PoSh {
                 Mock Test-Path { return $true }
                 Mock ExecCmd {}
 
-                $file = Join-Path -Path $PSScriptRoot -ChildPath '../TestsFiles/sample.img'
+                $file = Join-Path -Path $PSScriptRoot -ChildPath '../Files/sample.img'
                 
                 [Losetup]::Attach($device, $file)
 
                 Assert-MockCalled ExecCmd -ParameterFilter {    $Command -eq 'losetup' `
-                                                                -and $ArgumentsList -contains '/dev/loop0' `
+                                                                -and $ArgumentsList -contains $devicePath `
                                                                 -and $ArgumentsList -contains $file
                 } -Times 1 -Scope It
             }
@@ -39,7 +39,7 @@ InModuleScope RaspberryPi-PoSh {
 
                 Assert-MockCalled ExecCmd -ParameterFilter {    $Command -eq 'losetup' `
                                                                 -and $ArgumentsList -contains '-d' `
-                                                                -and $ArgumentsList -contains '/dev/loop0'
+                                                                -and $ArgumentsList -contains $devicePath
                 } -Times 1 -Scope It
                 
             }
