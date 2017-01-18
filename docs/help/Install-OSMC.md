@@ -37,10 +37,12 @@ Install-OSMC    -SDDevicePath <String>
 Parameter|Type|Required|Description
 ---------|----|--------|-----------
 |SDDevicePath|String|True|Path to the SD device, e.g. /dev/mmcblk0.|
+|SDDeviceFilePath|String|True|Path to the SD device image file, /home/ubuntu/Images/OSMC-4gb-SD-20170117.sources.|
 |FilePath|String|True|Please keep the original name as the cmdlet depends on it.|
 |CustomSettings|Hashtable|False|Hashtable containing the custom settings, this settings will be applied to the config.txt file.|
 |RestoreFilePath|String|False|Path to the backup file.|
 |USBDevicePath|String|True|Path to the USB device, e.g. /dev/sdc.|
+|USBDeviceFilePath|String|True|Path to the USB device image file, /home/ubuntu/Images/OSMC-16gb-USB-20170117.sources.|
 
 ### Example 1
 ```powershell

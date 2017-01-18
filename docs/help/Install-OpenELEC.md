@@ -33,10 +33,12 @@ Install-OpenELEC    -SDDevicePath <String>
 Parameter|Type|Required|Description
 ---------|----|--------|-----------
 |SDDevicePath|String|True|Path to the SD device, e.g. /dev/mmcblk0.|
+|SDDeviceFilePath|String|True|Path to the SD device image file, /home/ubuntu/Images/OpenELEC-4gb-SD-20170117.img.|
 |FilePath|String|True|Path to the OpenELEC image file.|
 |CustomSettings|Hashtable|False|Hashtable containing custom settings, these settings will be set as settings in the config.txt file.|
 |RestoreFilePath|String|False|Path to the backup file.|
 |USBDevicePath|String|True|Path to the USB device, e.g. /dev/sdc.|
+|USBDeviceFilePath|String|True|Path to the USB device image file, /home/ubuntu/Images/OpenELEC-16gb-USB-20170117.img.|
 
 ### Example 1
 ```powershell
