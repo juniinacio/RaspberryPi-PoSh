@@ -6,11 +6,11 @@
 
     This cmdlet expects the addons to be in a zipped (.zip) format, also the cmdlet does a basic validation of the addons structure.
 .EXAMPLE
-    PS /> Install-Plugin -SD '/dev/mmcblk0' -Path '/home/ubuntu/Downloads/plugin.video.youtube.zip'
+    PS /> Install-Plugin -SDDevicePath '/dev/mmcblk0' -Path '/home/ubuntu/Downloads/plugin.video.youtube.zip'
 
     This example shows how to install a Kodi plugin to SD.
 .EXAMPLE
-    PS /> Install-Plugin -USB '/dev/sdc' -Path '/home/ubuntu/Downloads/plugin.video.youtube.zip'
+    PS /> Install-Plugin -USBDevicePath '/dev/sdc' -Path '/home/ubuntu/Downloads/plugin.video.youtube.zip'
 
     This example shows how to install a Kodi plugin to USB.
 .PARAMETER SDDevicePath
@@ -26,14 +26,14 @@ function Install-Plugin {
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
         [Parameter(Mandatory = $true, ParameterSetName='SD')]
         [ValidateNotNullOrEmpty()]
-        [Alias('SDDevice', 'SD')]
+        [Alias('SD')]
         [string] 
         $SDDevicePath,
 
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
         [Parameter(Mandatory = $true, ParameterSetName='USB')]
         [ValidateNotNullOrEmpty()]
-        [Alias('USBDevice', 'USB')]
+        [Alias('USB')]
         [string] 
         $USBDevicePath,
         

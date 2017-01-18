@@ -28,9 +28,9 @@
 
     This example shows how to do an advanced LibreELEC install to USB, specify custom settings and also restoring a previously taken backup.
 .EXAMPLE
-    PS /> Install-LibreELEC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/LibreELEC-RPi2.arm-7.0.2.tar' -SDDeviceFilePath '/home/ubuntu/Images/LibreELEC-4gb-SD-20170117.img'
+    PS /> Install-LibreELEC -SDDevicePath '/dev/loop0' -SDDeviceFilePath '/home/ubuntu/Images/LibreELEC-4gb-SD-20170117.img' -FilePath '/home/ubuntu/Downloads/LibreELEC-RPi2.arm-7.0.2.tar'
 
-    This example shows how to install LibreELEC to a loop device.
+    This example shows how to install LibreELEC using loopback devices.
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
 .PARAMETER SDDeviceFilePath

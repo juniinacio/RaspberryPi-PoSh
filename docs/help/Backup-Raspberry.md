@@ -1,6 +1,10 @@
 # Backup-Raspberry
 Creates a backup of the Kodi installation on the Raspberry Pi.
 
+# Description
+This cmdlet Creates a backup of the Kodi installation on the Raspberry Pi. Use this cmdlet together with the Install-LibreELEC, Install-OpenELEC or Install-OSMC cmdlets to
+restore your Raspberry Pi in case of an emergency or new install.
+
 ## Syntax
 ```powershell
 Backup-Raspberry    -SDDevicePath <String>
@@ -16,7 +20,7 @@ Backup-Raspberry    -USBDevicePath <String>
                     [<CommonParameters>]
 ```
 
-### Parameters
+## Parameters
 Parameter|Type|Required|Description
 ---------|----|--------|-----------
 |SDDevicePath|String|True|Path to the SD device, e.g. /dev/mmcblk0.|
@@ -26,12 +30,12 @@ Parameter|Type|Required|Description
 
 ### Example 1
 ```powershell
-PS /> Backup-Raspberry -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Backups/Kodi-20161223084639.tar'
+PS /> Backup-Raspberry -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Backups/Kodi-20161223084639.tar'
 ```
 This example shows how to take a backup of your Kodi installation when installed to SD.
 
 ### Example 2
 ```powershell
-PS /> Backup-Raspberry -USB '/dev/sdc' -ExcludeFilePath '/home/ubuntu/Documents/ExcludeFile.txt'
+PS /> Backup-Raspberry -USBDevicePath '/dev/sdc' -ExcludeFilePath '/home/ubuntu/Documents/ExcludeFile.txt'
 ```
 This example shows how to take a backup of your Kodi installation when installed to USB. For more information about the -ExcludeFilePath parameter see tar -X command.

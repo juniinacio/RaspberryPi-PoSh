@@ -13,15 +13,15 @@
     http://download.osmc.tv/installers/diskimages/ (direct link)
 
 .EXAMPLE
-    PS /> Install-OSMCInstaller -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz'
+    PS /> Install-OSMCInstaller -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz'
 
     This example shows how to do a typical OSMC install.
 .EXAMPLE
-    PS /> Install-OSMCInstaller -SD '/dev/mmcblk0' -USB '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz'
+    PS /> Install-OSMCInstaller -SDDevicePath '/dev/mmcblk0' -USB '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz'
 
     This example shows how to do an install to USB.
 .EXAMPLE
-    PS /> Install-OSMCInstaller -SD '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -WLAN -KeyType 'WPA/WPA2_PSK' -Key '123456' -SSID  'MyNetwork'
+    PS /> Install-OSMCInstaller -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -WLAN -KeyType 'WPA/WPA2_PSK' -Key '123456' -SSID  'MyNetwork'
 
     This example shows how to install to SD and configure WiFi.
 .PARAMETER SDDevicePath
@@ -51,7 +51,7 @@ function Install-OSMCInstaller {
         [Parameter(Mandatory = $true, ParameterSetName = 'eth')]
         [Parameter(Mandatory = $true, ParameterSetName = 'wlan')]
         [ValidateNotNullOrEmpty()]
-        [Alias('SDDevice', 'SD')]
+        [Alias('SD')]
         [string]
         $SDDevicePath,
 

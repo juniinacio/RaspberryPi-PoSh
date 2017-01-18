@@ -30,7 +30,7 @@
 .EXAMPLE
     PS /> Install-OpenELEC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar' -SDDeviceFilePath '/home/ubuntu/Images/OpenELEC-4gb-SD-20170117.img'
 
-    This example shows how to install OpenELEC to a loop device.
+    This example shows how to install OpenELEC using loopback devices.
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
 .PARAMETER SDDeviceFilePath

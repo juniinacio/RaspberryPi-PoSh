@@ -1,5 +1,10 @@
 # Install-Plugin
-Installs Kodi addons
+Installs Kodi addons.
+
+## Description
+This cmdlet can be use to install or more addons into an existing Raspberry Pi Kodi installation.
+
+This cmdlet expects the addons to be in a zipped (.zip) format, also the cmdlet does a basic validation of the addons structure.
 
 ## Syntax
 ```powershell
@@ -16,7 +21,7 @@ Install-Plugin  -USBDevicePath <String>
                 [<CommonParameters>]
 ```
 
-### Parameters
+## Parameters
 Parameter|Type|Required|Description
 ---------|----|--------|-----------
 |SDDevicePath|String|True|Path to the SD device, e.g. /dev/mmcblk0.|
@@ -25,12 +30,12 @@ Parameter|Type|Required|Description
 
 ### Example 1
 ```powershell
-PS /> Install-Plugin -SD '/dev/mmcblk0' -Path '/home/ubuntu/Downloads/plugin.video.youtube.zip'
+PS /> Install-Plugin -SDDevicePath '/dev/mmcblk0' -Path '/home/ubuntu/Downloads/plugin.video.youtube.zip'
 ```
 This example shows how to install a Kodi plugin to SD.
 
 ### Example 2
 ```powershell
-PS /> Install-Plugin -USB '/dev/sdc' -Path '/home/ubuntu/Downloads/plugin.video.youtube.zip'
+PS /> Install-Plugin -USBDevicePath '/dev/sdc' -Path '/home/ubuntu/Downloads/plugin.video.youtube.zip'
 ```
 This example shows how to install a Kodi plugin to USB.
