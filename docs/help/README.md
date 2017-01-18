@@ -22,10 +22,3 @@ Backup & restore cmdlets
 Cmdlet|Description
 :-----|:----------
 **[Backup-Raspberry](Backup-Raspberry.md)** |Creates a backup of the Kodi installation on the Raspberry Pi.
-
-Image cmdlets
-------------------------
-
-Cmdlet|Description
-:-----|:----------
-**[New-LibreELECImage](New-LibreELECImage.md)** |Creates a LibreELEC image
