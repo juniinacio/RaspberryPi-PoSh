@@ -1,20 +1,16 @@
+$global:sudocmd = 'sudo'
+
 #----------------------------------------------------------------------------------------------------------------------
-# Global variables
+# Environment variables
 if (-not (Test-Path -Path '/etc/os-release' -PathType Leaf)) {
     throw "Cannot find path '/etc/os-release' because it does not exist."
 }
 
-$hashtable = (Get-Content -Path '/etc/os-release')  -replace '"', '' | ConvertFrom-StringData
-$hashtable.Keys | ForEach-Object {New-Variable -Name "DISTRO_$_" -Value $hashtable.$_ -Option ReadOnly -Force -Scope Global}
+$hash = Get-Content -Path '/etc/os-release' | ForEach-Object {$_ -replace '"', ''} | Out-String | ConvertFrom-StringData
+$hash.GetEnumerator() | ForEach-Object {Set-Item -Path ("env:DISTRO_{0}" -f $_.Key) -Value $_.Value}
 
 #----------------------------------------------------------------------------------------------------------------------
 # Constants
-
-enum Distribution {
-    LibreELEC
-    OpenELEC
-    OSMC
-}
 
 enum EventSeverity {
 	Information
@@ -117,7 +113,7 @@ class DeviceService {
     static [System.Collections.ArrayList] GetDevices ([bool] $Force = $false) {
         $arrayList = [System.Collections.ArrayList]::New()
         
-        if (($Global:DISTRO_NAME -eq 'Ubuntu' -and $Global:DISTRO_VERSION_ID -like '14*') -or ($Global:DISTRO_NAME -like 'CentOS*' -and $Global:DISTRO_VERSION_ID -like '7')) {
+        if (($env:DISTRO_NAME -eq 'Ubuntu' -and $env:DISTRO_VERSION_ID -like '14*') -or ($env:DISTRO_NAME -like 'CentOS*' -and $env:DISTRO_VERSION_ID -like '7')) {
             $output = ExecCmd -Command 'lsblk' -ArgumentsList '-a', '-P', '-b', '-o', 'name,fstype,size,mountpoint,type,label,rm'
         } else {
             $output = ExecCmd -Command 'lsblk' -ArgumentsList '-a', '-P', '-b', '-o', 'name,fstype,size,mountpoint,type,label,hotplug'
@@ -125,7 +121,7 @@ class DeviceService {
         
         [Logger]::LogMessage($output, [EventSeverity]::Debug)
 
-        $hashtables = $output.Split("`n") | ForEach-Object {(($_ -replace '(?<=")\s', "`n") -replace '"', '') -replace 'rm=', 'hotplug=' | ConvertFrom-StringData}
+        $hashtables = $output.Split("`n") | ForEach-Object {(($_ -replace '(?<=")\s', "`n") -replace '"', '') -replace 'rm=', 'hotplug=' | Out-String | ConvertFrom-StringData}
 
         $devices = $hashtables | Where-Object {$_.name -match "\A((?=[^0-9]+\z)|(?=(mmcblk|loop)\d\z))"}
 
