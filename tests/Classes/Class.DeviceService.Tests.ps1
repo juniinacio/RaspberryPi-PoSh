@@ -3,76 +3,55 @@ Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/Rasp
 InModuleScope RaspberryPi-PoSh {
     
     Describe "DeviceService" {
-        
-        Mock ExecCmd {
-                    return @'
-{
-   "blockdevices": [
-      {"name": "sda", "fstype": null, "size": "111,8G", "mountpoint": null, "type": "disk", "label": null, "hotplug": "1",
-         "children": [
-            {"name": "sda1", "fstype": "swap", "size": "22,9G", "mountpoint": "[SWAP]", "type": "part", "label": null, "hotplug": "1"},
-            {"name": "sda2", "fstype": null, "size": "1K", "mountpoint": null, "type": "part", "label": null, "hotplug": "1"},
-            {"name": "sda5", "fstype": "ext4", "size": "88,9G", "mountpoint": "/", "type": "part", "label": null, "hotplug": "1"}
-         ]
-      },
-      {"name": "sdb", "fstype": null, "size": "477G", "mountpoint": null, "type": "disk", "label": null, "hotplug": "0",
-         "children": [
-            {"name": "sdb1", "fstype": "ntfs", "size": "360M", "mountpoint": null, "type": "part", "label": "Windows RE tools", "hotplug": "0"},
-            {"name": "sdb2", "fstype": "vfat", "size": "200M", "mountpoint": "/boot/efi", "type": "part", "label": "SYSTEM", "hotplug": "0"},
-            {"name": "sdb3", "fstype": null, "size": "128M", "mountpoint": null, "type": "part", "label": null, "hotplug": "0"},
-            {"name": "sdb4", "fstype": null, "size": "240G", "mountpoint": null, "type": "part", "label": null, "hotplug": "0"},
-            {"name": "sdb5", "fstype": null, "size": "236,3G", "mountpoint": null, "type": "part", "label": null, "hotplug": "0"}
-         ]
-      },
-      {"name": "loop0", "fstype": null, "size": null, "mountpoint": null, "type": "loop", "label": null, "hotplug": "0"},
-      {"name": "loop1", "fstype": null, "size": null, "mountpoint": null, "type": "loop", "label": null, "hotplug": "0"},
-      {"name": "loop2", "fstype": null, "size": null, "mountpoint": null, "type": "loop", "label": null, "hotplug": "0"},
-      {"name": "loop3", "fstype": null, "size": null, "mountpoint": null, "type": "loop", "label": null, "hotplug": "0"},
-      {"name": "loop4", "fstype": null, "size": null, "mountpoint": null, "type": "loop", "label": null, "hotplug": "0"},
-      {"name": "loop5", "fstype": null, "size": null, "mountpoint": null, "type": "loop", "label": null, "hotplug": "0"},
-      {"name": "loop6", "fstype": null, "size": null, "mountpoint": null, "type": "loop", "label": null, "hotplug": "0"},
-      {"name": "loop7", "fstype": null, "size": null, "mountpoint": null, "type": "loop", "label": null, "hotplug": "0"},
-      {"name": "mmcblk0", "fstype": null, "size": "3,7G", "mountpoint": null, "type": "disk", "label": null, "hotplug": "1",
-         "children": [
-            {"name": "mmcblk0p1", "fstype": "vfat", "size": "509M", "mountpoint": "$TestDrive/SYSTEM", "type": "part", "label": "SYSTEM", "hotplug": "1"},
-            {"name": "mmcblk0p2", "fstype": "ext4", "size": "3,1G", "mountpoint": "$TestDrive/STORAGE", "type": "part", "label": "STORAGE", "hotplug": "1"}
-         ]
-      }
-   ]
-}
-'@
-        }
 
         Context "listing devices" {
             It "Can discover devices" {
+
+                Mock ExecCmd {
+                    return @'
+NAME="sda" FSTYPE="" SIZE="512110190592" MOUNTPOINT="" TYPE="disk" LABEL="" HOTPLUG="0"
+NAME="sda1" FSTYPE="ntfs" SIZE="377487360" MOUNTPOINT="" TYPE="part" LABEL="Windows RE tools" HOTPLUG="0"
+NAME="sda2" FSTYPE="vfat" SIZE="209715200" MOUNTPOINT="/boot/efi" TYPE="part" LABEL="SYSTEM" HOTPLUG="0"
+NAME="sda3" FSTYPE="" SIZE="134217728" MOUNTPOINT="" TYPE="part" LABEL="" HOTPLUG="0"
+NAME="sda4" FSTYPE="" SIZE="257698037760" MOUNTPOINT="" TYPE="part" LABEL="" HOTPLUG="0"
+NAME="sda5" FSTYPE="" SIZE="253689331712" MOUNTPOINT="" TYPE="part" LABEL="" HOTPLUG="0"
+NAME="sdb" FSTYPE="" SIZE="120034123776" MOUNTPOINT="" TYPE="disk" LABEL="" HOTPLUG="1"
+NAME="sdb1" FSTYPE="swap" SIZE="24527915520" MOUNTPOINT="[SWAP]" TYPE="part" LABEL="" HOTPLUG="1"
+NAME="sdb2" FSTYPE="" SIZE="1024" MOUNTPOINT="" TYPE="part" LABEL="" HOTPLUG="1"
+NAME="sdb5" FSTYPE="ext4" SIZE="95427348480" MOUNTPOINT="/" TYPE="part" LABEL="" HOTPLUG="1"
+NAME="sdc" FSTYPE="" SIZE="7759462400" MOUNTPOINT="" TYPE="disk" LABEL="" HOTPLUG="1"
+NAME="sdc1" FSTYPE="ext4" SIZE="7741636608" MOUNTPOINT="" TYPE="part" LABEL="Storage" HOTPLUG="1"
+NAME="loop0" FSTYPE="" SIZE="" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="loop0p1" FSTYPE="vfat" SIZE="533725184" MOUNTPOINT="" TYPE="loop" LABEL="SYSTEM" HOTPLUG="0"
+NAME="loop0p2" FSTYPE="ext4" SIZE="3743416320" MOUNTPOINT="" TYPE="loop" LABEL="STORAGE" HOTPLUG="0"
+NAME="loop1" FSTYPE="" SIZE="" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="loop1p1" FSTYPE="vfat" SIZE="254803968" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="loop2" FSTYPE="" SIZE="" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="loop3" FSTYPE="" SIZE="" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="loop4" FSTYPE="" SIZE="" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="loop5" FSTYPE="" SIZE="" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="loop6" FSTYPE="" SIZE="" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="loop7" FSTYPE="" SIZE="" MOUNTPOINT="" TYPE="loop" LABEL="" HOTPLUG="0"
+NAME="mmcblk0" FSTYPE="" SIZE="3904897024" MOUNTPOINT="" TYPE="disk" LABEL="" HOTPLUG="1"
+NAME="mmcblk0p1" FSTYPE="vfat" SIZE="533725184" MOUNTPOINT="/tmp/5690122e-d905-4800-a310-f0b8b78b461e" TYPE="part" LABEL="SYSTEM" HOTPLUG="1"
+'@
+                }
+                
                 $devices = [DeviceService]::GetDevices($true)
 
-                $devices.Count | Should Be 11
+                $devices.Count | Should Be 12
                 $devices[1].Name | Should Be 'sdb'
+                $devices[11].Name | Should Be 'mmcblk0'
             }
 
-            It "Can discover only removable devices" {
+            It "Can discover removable devices" {
                 $devices = [DeviceService]::GetDevices($false)
 
-                $devices.Count | Should Be 10
-                $devices | Where-Object {$_.Name -eq 'sdb'} | Should Be $null
+                $devices | Where-Object {$_.Name -eq 'sda'} | Should Be $null
             }
 
-            It "Can discover devices including loop devices" {
-                $devices = [DeviceService]::GetDevices($false)
-
-                $devices[1].Name | Should Be 'loop0'
-                $devices[8].Name | Should Be 'loop7'
-            }
-        }
-
-        Context "searching devices" {
-            It "Can return device /dev/mmcblk0" {
-                [DeviceService]::GetDevice('/dev/mmcblk0') | Should Not Be $null
-            }
-
-            It "Cannot return device /dev/sdc" {
-                [DeviceService]::GetDevice('/dev/sdc') | Should Be $null
+            It "Can return a single device" {
+                [DeviceService]::GetDevices('sda') | Should Not Be $null
             }
         }
     }

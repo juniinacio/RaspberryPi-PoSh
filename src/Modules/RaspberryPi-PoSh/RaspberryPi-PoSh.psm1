@@ -62,7 +62,9 @@ class Device {
         $this.Type = $Type
         $this.Label = $Label
         $this.Hotplug = $Hotplug
+        
         $this.Parent = $null
+        
         $this.Partitions = [System.Collections.ArrayList]::New()
     }
 
@@ -106,38 +108,45 @@ class Device {
 class DeviceService {
 
     static [System.Collections.ArrayList] GetDevices ([bool] $Force = $false) {
-
-        $lsblkcmd = 'lsblk'
+        $arrayList = [System.Collections.ArrayList]::New()
         
-        $output = ExecCmd -Command $lsblkcmd -ArgumentsList '-a', '-J', '-o', 'name,fstype,size,mountpoint,type,label,hotplug'
+        if ([Utility]::OSVersion() -like 'jessie*' -or [Utility]::OSVersion() -like 'CentOS*7*') {
+            $output = ExecCmd -Command 'lsblk' -ArgumentsList '-a', '-P', '-b', '-o', 'name,fstype,size,mountpoint,type,label,rm'
+        } else {
+            $output = ExecCmd -Command 'lsblk' -ArgumentsList '-a', '-P', '-b', '-o', 'name,fstype,size,mountpoint,type,label,hotplug'
+        }
         
         [Logger]::LogMessage($output, [EventSeverity]::Debug)
 
-        $output = $output | ConvertFrom-Json
+        $hashtables = $output.Split("`n") | ForEach-Object {(($_ -replace '(?<=")\s', "`n") -replace '"', '') -replace 'rm=', 'hotplug=' | ConvertFrom-StringData}
 
-        $blockdevices = [System.Collections.ArrayList]::New()
+        $devices = $hashtables | Where-Object {$_.name -match "\A((?=[^0-9]+\z)|(?=(mmcblk|loop)+\d\z))"}
 
-        foreach ($b in $output.blockdevices) {
-            if (($b.hotplug -eq 0) -and ($Force -eq $false) -and ($b.name -notmatch 'loop\d{1}$')) {
+        foreach ($dev in $devices) {
+            if (($dev.hotplug -eq 0) -and ($Force -eq $false) -and ($dev.name -notmatch 'loop\d\z')) {
                 continue;
             }
-            
-            $device = [Device]::new($b.name, $b.fstype, $b.size, $b.mountpoint, $b.type, $b.label, $b.hotplug)
 
-            foreach ($c in $b.children) {
-                $partition = [Device]::new($c.name, $c.fstype, $c.size, $c.mountpoint, $c.type, $c.label, $c.hotplug)
-                $Partition.SetParent($device)
+            $device = [Device]::new($dev.name, $dev.fstype, $dev.size, $dev.mountpoint, $dev.type, $dev.label, $dev.hotplug)
+
+            $partitions = $hashtables | Where-Object {$_.name -match ("\A{0}p?\d\z" -f $dev.name)}
+
+            foreach ($part in $partitions) {
+                $partition = [Device]::new($part.name, $part.fstype, $part.size, $part.mountpoint, $part.type, $part.label, $part.hotplug)
+                
+                $partition.SetParent($device)
+                
                 $device.SetPartition($partition)
             }
-            
-            $blockdevices.Add($device)
+
+            $arrayList.Add($device)
         }
 
-        return $blockdevices
+        return $arrayList
     }
 
     static [Device] GetDevice ([string] $Path) {
-        return $([DeviceService]::GetDevices($true) | Where-Object {$_.GetPath() -like $Path})
+        return $([DeviceService]::GetDevices($true) | Where-Object {$_.GetPath() -eq $Path})
     }
 }
 
@@ -197,6 +206,18 @@ class Utility {
 
     static [void] DD([string] $If, [string]$Of, [long] $Bs, [long] $Count) {
         ExecCmd -Command 'dd' -ArgumentsList "if=$If", "of=$Of", "bs=$Bs", "count=$Count", 'status=none'
+    }
+
+    static [string] OSVersion() {
+        $output = [string]::Empty
+
+        if (Test-Path -Path '/etc/debian_version') {
+            $output = Get-Content -Path '/etc/debian_version'
+        } elseif (Test-Path -Path '/etc/redhat-release') {
+            $output = Get-Content -Path '/etc/redhat-release'
+        }
+
+        return $output
     }
 }
 
@@ -523,10 +544,10 @@ function ExecCmd {
 
     if ($UseSudo.IsPresent) {
         [Logger]::LogMessage("Running: $sudocmd $Command $ArgumentsList", [EventSeverity]::Verbose)
-        $output = & $sudocmd $Command $ArgumentsList
+        $output = & $sudocmd $Command @ArgumentsList
     } else {
         [Logger]::LogMessage("Running: $Command $ArgumentsList", [EventSeverity]::Verbose)
-        $output = & $Command $ArgumentsList
+        $output = & $Command @ArgumentsList
     }
 
     if ($LastExitCode -ne 0) {
