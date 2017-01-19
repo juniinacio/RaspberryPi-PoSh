@@ -1,4 +1,11 @@
-$global:sudocmd = "sudo"
+#----------------------------------------------------------------------------------------------------------------------
+# Global variables
+if (-not (Test-Path -Path '/etc/os-release' -PathType Leaf)) {
+    throw "Cannot find path '/etc/os-release' because it does not exist."
+}
+
+$hashtable = Get-Content -Path '/etc/os-release' | ConvertFrom-StringData
+$hashtable.Keys | ForEach-Object {New-Variable -Name "DISTRO_$_" -Value $hashtable.$_ -Option ReadOnly -Force -Scope Global}
 
 #----------------------------------------------------------------------------------------------------------------------
 # Constants
@@ -110,7 +117,7 @@ class DeviceService {
     static [System.Collections.ArrayList] GetDevices ([bool] $Force = $false) {
         $arrayList = [System.Collections.ArrayList]::New()
         
-        if ([Utility]::OSVersion() -like 'jessie*' -or [Utility]::OSVersion() -like 'CentOS*7*') {
+        if (($Global:DISTRO_NAME -eq 'Ubuntu' -and $Global:DISTRO_VERSION_ID -like '14*') -or ($Global:DISTRO_NAME -like 'CentOS*' -and $Global:DISTRO_VERSION_ID -like '7')) {
             $output = ExecCmd -Command 'lsblk' -ArgumentsList '-a', '-P', '-b', '-o', 'name,fstype,size,mountpoint,type,label,rm'
         } else {
             $output = ExecCmd -Command 'lsblk' -ArgumentsList '-a', '-P', '-b', '-o', 'name,fstype,size,mountpoint,type,label,hotplug'
@@ -206,18 +213,6 @@ class Utility {
 
     static [void] DD([string] $If, [string]$Of, [long] $Bs, [long] $Count) {
         ExecCmd -Command 'dd' -ArgumentsList "if=$If", "of=$Of", "bs=$Bs", "count=$Count", 'status=none'
-    }
-
-    static [string] OSVersion() {
-        $output = [string]::Empty
-
-        if (Test-Path -Path '/etc/debian_version') {
-            $output = Get-Content -Path '/etc/debian_version'
-        } elseif (Test-Path -Path '/etc/redhat-release') {
-            $output = Get-Content -Path '/etc/redhat-release'
-        }
-
-        return $output
     }
 }
 
