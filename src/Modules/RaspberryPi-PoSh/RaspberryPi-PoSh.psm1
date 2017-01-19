@@ -120,7 +120,7 @@ class DeviceService {
 
         $hashtables = $output.Split("`n") | ForEach-Object {(($_ -replace '(?<=")\s', "`n") -replace '"', '') -replace 'rm=', 'hotplug=' | ConvertFrom-StringData}
 
-        $devices = $hashtables | Where-Object {$_.name -match "\A((?=[^0-9]+\z)|(?=(mmcblk|loop)+\d\z))"}
+        $devices = $hashtables | Where-Object {$_.name -match "\A((?=[^0-9]+\z)|(?=(mmcblk|loop)\d\z))"}
 
         foreach ($dev in $devices) {
             if (($dev.hotplug -eq 0) -and ($Force -eq $false) -and ($dev.name -notmatch 'loop\d\z')) {
