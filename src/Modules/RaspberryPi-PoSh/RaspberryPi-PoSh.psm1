@@ -4,7 +4,7 @@ if (-not (Test-Path -Path '/etc/os-release' -PathType Leaf)) {
     throw "Cannot find path '/etc/os-release' because it does not exist."
 }
 
-$hashtable = Get-Content -Path '/etc/os-release' | ConvertFrom-StringData
+$hashtable = (Get-Content -Path '/etc/os-release')  -replace '"', '' | ConvertFrom-StringData
 $hashtable.Keys | ForEach-Object {New-Variable -Name "DISTRO_$_" -Value $hashtable.$_ -Option ReadOnly -Force -Scope Global}
 
 #----------------------------------------------------------------------------------------------------------------------
