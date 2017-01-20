@@ -251,11 +251,11 @@ function Install-OSMCInstaller {
                 $preseedFile.SetNetworkSetting('wlan_key', [PreseedOptionType]::PRESEED_STRING, $Key)
 
                 if ($KeyType -eq 'Open_Network') {
-                    $preseedFile.SetNetworkSetting('wlan_KeyType', [PreseedOptionType]::PRESEED_STRING, 0)
+                    $preseedFile.SetNetworkSetting('wlan_keytype', [PreseedOptionType]::PRESEED_STRING, 0)
                 } elseif ($KeyType -eq 'WPA/WPA2_PSK') {
-                    $preseedFile.SetNetworkSetting('wlan_KeyType', [PreseedOptionType]::PRESEED_STRING, 1)
+                    $preseedFile.SetNetworkSetting('wlan_keytype', [PreseedOptionType]::PRESEED_STRING, 1)
                 } else {
-                    $preseedFile.SetNetworkSetting('wlan_KeyType', [PreseedOptionType]::PRESEED_STRING, 2)
+                    $preseedFile.SetNetworkSetting('wlan_keytype', [PreseedOptionType]::PRESEED_STRING, 2)
                 }
             }
             
