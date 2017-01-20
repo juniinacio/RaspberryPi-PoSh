@@ -479,7 +479,7 @@ class ConfigFile {
 
         foreach ($line in $this.Content) {
             foreach ($key in $Hashtable.keys) {
-                $line = $line -replace $('^[\s#]*{0}\s*=\s*(?<value>[a-zA-Z0-9_]+)\s*$' -f $key), $(' {0}={1}' -f $key, $Hashtable.Item($Key)) 
+                $line = $line -replace $('^[\s#]*{0}\s*=\s*(?<value>[a-zA-Z0-9_]+)\s*$' -f $key), $('  {0}={1}' -f $key, $Hashtable.Item($Key)) 
             }
             $lines.Add($line)
         }
@@ -488,13 +488,13 @@ class ConfigFile {
             $match = $false
             
             foreach ($line in $lines) {
-                if ($line -imatch ('^\s{0}={1}\s*$' -f $key, $Hashtable.Item($Key))) {
+                if ($line -imatch ('^\s*{0}={1}\s*$' -f $key, $Hashtable.Item($Key))) {
                     $match = $true
                 }
             }
 
             if (-not $match) {
-                $lines.Add($(' {0}={1}' -f $key, $Hashtable.Item($key)))
+                $lines.Add($('  {0}={1}' -f $key, $Hashtable.Item($key)))
             }
         }
 

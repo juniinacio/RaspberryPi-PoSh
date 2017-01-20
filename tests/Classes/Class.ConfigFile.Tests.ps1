@@ -24,8 +24,8 @@ InModuleScope RaspberryPi-PoSh {
                 $configFile.Save()
 
                 $testFile | Should Contain "^# arm_freq=700$"
-                $testFile | Should Contain "^ hdmi_ignore_cec_init=1$"
-                $testFile | Should Contain "^ disable_overscan=1$"
+                $testFile | Should Contain "^  hdmi_ignore_cec_init=1$"
+                $testFile | Should Contain "^  disable_overscan=1$"
             }
 
             It "Can update existing settings" {
@@ -50,13 +50,13 @@ disable_overscan = 0
                 $configFile.SetCustomSettings($customSettings)
                 $configFile.Save()
 
-                $testFile | Should Contain "^ arm_freq=1350$"
-                $testFile | Should Contain "^ core_freq=500$"
-                $testFile | Should Contain "^ over_voltage=4$"
+                $testFile | Should Contain "^  arm_freq=1350$"
+                $testFile | Should Contain "^  core_freq=500$"
+                $testFile | Should Contain "^  over_voltage=4$"
                 $testFile | Should Contain "^# sdram_freq=400$"
-                $testFile | Should Contain "^ force_turbo=0$"
-                $testFile | Should Contain "^ hdmi_ignore_cec_init=1$"
-                $testFile | Should Contain "^ disable_overscan=1$"
+                $testFile | Should Contain "^  force_turbo=0$"
+                $testFile | Should Contain "^  hdmi_ignore_cec_init=1$"
+                $testFile | Should Contain "^  disable_overscan=1$"
             }
         }
     }
