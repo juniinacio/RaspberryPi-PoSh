@@ -329,6 +329,10 @@ function Install-OSMC {
 
             [Utility]::Mount($loop.GetPartition(0), $source)
 
+            if (-not (Test-Path -Path (Join-Path -Path $source -ChildPath 'filesystem.tar.xz') -PathType Leaf)) {
+                throw "Cannot find path '$(Join-Path -Path $source -ChildPath 'filesystem.tar.xz')' because it does not exist."
+            }
+
             $extractScript = Join-Path -Path $PSScriptRoot -ChildPath '../Files/extract-osmc-filesystem.sh'
             if (-not (Test-Path -Path $extractScript -PathType Leaf)) {
                 throw "Cannot find path '$extractScript' because it does not exist."
@@ -405,6 +409,8 @@ function Install-OSMC {
                 Copy-Item   -Path "$source/boot/*" -Destination "$destination/" -Recurse
                 Remove-Item -Path "$source/boot/*" -Recurse
 
+                [Utility]::Sync()
+
                 $SD = [DeviceService]::GetDevice($SDDevicePath)
                 if ($SD.GetPartition(1).Umount()) {
                     [Utility]::Umount($SD.GetPartition(1))
@@ -430,6 +436,8 @@ function Install-OSMC {
 
                 Copy-Item   -Path "$source/boot/*" -Destination "$destination/" -Recurse
                 Remove-Item -Path "$source/boot/*" -Recurse
+
+                [Utility]::Sync()
 
                 $USB = [DeviceService]::GetDevice($USBDevicePath)
                 if ($USB.GetPartition(0).Umount()) {

@@ -286,7 +286,7 @@ class Tar {
         }
     }
 
-    static [void] CreateEx ([string] $Source, [string] $Destination, [string] $FilePath) {
+    static [void] Create ([string] $Source, [string] $Destination, [string] $FilePath) {
         if (-not (Test-Path -Path $Source -PathType Container)) {
             throw "Cannot find path '$Source' because it does not exist."
         }

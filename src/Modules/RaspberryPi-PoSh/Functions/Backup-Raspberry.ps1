@@ -98,7 +98,7 @@ function Backup-Raspberry {
             if (-not $PSBoundParameters.ContainsKey('ExcludeFilePath')) {
                 [Tar]::Create($source, $FilePath)
             } else {
-                [Tar]::CreateEx($source, $FilePath, $ExcludeFilePath)
+                [Tar]::Create($source, $FilePath, $ExcludeFilePath)
             }
 
             $device = [DeviceService]::GetDevice($devicePath)
