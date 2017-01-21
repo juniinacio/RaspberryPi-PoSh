@@ -20,7 +20,7 @@ InModuleScope RaspberryPi-PoSh {
 
             $RestoreFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'assets/RestoreFileELEC.tar'
 
-            $Plugins = Get-ChildItem -Path $Env:HOME -Filter "Downloads/plugin.video.*.zip" | Select-Object -ExpandProperty FullName
+            $Plugins = Get-ChildItem -Path $Path -Filter "Downloads/plugin.video.*.zip" | Select-Object -ExpandProperty FullName
 
             Install-LibreELEC -SDDevicePath $SDDevicePath -SDDeviceFilePath $SDDeviceFilePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
 

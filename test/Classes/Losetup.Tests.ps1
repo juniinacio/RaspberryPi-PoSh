@@ -17,13 +17,13 @@ InModuleScope RaspberryPi-PoSh {
             [Losetup]::Attach($device, $file)
             $device2 = [Losetup]::Lookup()
             $device.GetPath() | Should Not Be $device2
-            $output = & losetup
+            $output = & losetup -a
             $output -match ("(?m){0}" -f $device.GetPath()) | Should Be $true
         }
 
         It "Should be able to detach image from loop device" {
             [Losetup]::Detach($device)
-            $output = & losetup
+            $output = & losetup -a
             $output -match ("(?m){0}" -f $device.GetPath()) | Should Not Be $true
         }
     }

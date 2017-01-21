@@ -218,7 +218,7 @@ class Utility {
             $output = ExecCmd -Command 'who'
         }
 
-        return ($output.trim() -split '\s+', '')[0]
+        return ($output -split '\s+', '')[0]
     }
 }
 
