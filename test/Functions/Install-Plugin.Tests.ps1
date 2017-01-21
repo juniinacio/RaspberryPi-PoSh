@@ -11,7 +11,12 @@ InModuleScope RaspberryPi-PoSh {
             [Utility]::DD('/dev/zero', $USBDeviceFilePath, 1048576, $(8gb/1048576))
             $USBDevicePath = '/dev/loop1'
 
-            $FilePath = Join-Path -Path $Env:HOME -ChildPath 'Downloads/LibreELEC-RPi2.arm-7.0.3.tar'
+            $Path = $env:HOME
+			if ($env:USER -eq 'root') {
+				$Path = Join-Path -Path '/home' -ChildPath ([Utility]::Who())
+			}
+
+            $FilePath = Join-Path -Path $Path -ChildPath 'Downloads/LibreELEC-RPi2.arm-7.0.3.tar'
 
             $RestoreFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'assets/RestoreFileELEC.tar'
 

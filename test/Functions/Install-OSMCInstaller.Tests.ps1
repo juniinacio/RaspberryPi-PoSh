@@ -7,7 +7,12 @@ InModuleScope RaspberryPi-PoSh {
             [Utility]::DD('/dev/zero', $SDDeviceFilePath, 1048576, $(4gb/1048576))
             $SDDevicePath = '/dev/loop0'
 
-            $FilePath = $FilePath = Get-ChildItem -Path (Join-Path -Path $Env:HOME -ChildPath 'Downloads/') -Filter "OSMC_TGT_rbp2_*.img.gz" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
+            $Path = $env:HOME
+			if ($env:USER -eq 'root') {
+				$Path = Join-Path -Path '/home' -ChildPath ([Utility]::Who())
+			}
+
+            $FilePath = $FilePath = Get-ChildItem -Path (Join-Path -Path $Path -ChildPath 'Downloads/') -Filter "OSMC_TGT_rbp2_*.img.gz" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
 
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             [Losetup]::Attach($SD, $SDDeviceFilePath)
