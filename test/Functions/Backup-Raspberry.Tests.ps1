@@ -8,7 +8,7 @@ InModuleScope RaspberryPi-PoSh {
             $SDDevicePath = [Losetup]::Lookup()
 
             $Path = $env:HOME
-            if ($env:USER -eq 'root') {
+            if ($env:USER -eq 'root' -or [string]::IsNullOrEmpty($env:USER)) {
                 $childPath = [Utility]::Who()
                 $Path = Join-Path -Path '/home' -ChildPath $childPath
             }
