@@ -214,7 +214,7 @@ function Install-LibreELEC {
 
                 $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
 
-                [mkfs]::Ext4($USBDevice.GetPartition(0), 'Storage')
+                [mkfs]::Ext4($USBDevice.GetPartition(0), 'STORAGE')
             }
 
             $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
