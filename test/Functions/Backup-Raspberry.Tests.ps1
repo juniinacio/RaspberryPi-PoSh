@@ -7,9 +7,14 @@ InModuleScope RaspberryPi-PoSh {
             [Utility]::DD('/dev/zero', $SDDeviceFilePath, 1048576, $(4gb/1048576))
             $SDDevicePath = [Losetup]::Lookup()
 
-            $FilePath = Join-Path -Path $Env:HOME -ChildPath 'Downloads/LibreELEC-RPi2.arm-7.0.3.tar'
+            $Path = $env:HOME
+            if ($env:USER -eq 'root') {
+                $Path = Join-Path -Path '/home' -ChildPath ([Utility]::Who())
+            }
 
-            $RestoreFilePath = Join-Path -Path $Env:HOME -ChildPath 'Backups/LibreELEC-20170113131100.tar'
+            $FilePath = Get-ChildItem -Path (Join-Path -Path $Path -ChildPath 'Downloads/') -Filter "LibreELEC-RPi2.arm-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
+
+            $RestoreFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'assets/RestoreFileELEC.tar'
 
             Install-LibreELEC -SDDevicePath $SDDevicePath -SDDeviceFilePath $SDDeviceFilePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
 
@@ -18,7 +23,6 @@ InModuleScope RaspberryPi-PoSh {
         }
 
         It "Should be able to create backup" {
-
             $Path = Join-Path -Path $TestDrive -ChildPath 'LibreELEC.tar'
 
             Backup-Raspberry -SDDevicePath $SDDevicePath -Path $Path

@@ -210,6 +210,16 @@ class Utility {
     static [void] DD([string] $If, [string]$Of, [long] $Bs, [long] $Count) {
         ExecCmd -Command 'dd' -ArgumentsList "if=$If", "of=$Of", "bs=$Bs", "count=$Count", 'status=none'
     }
+
+    static [string] Who () {
+        if (($env:DISTRO_NAME -eq 'Ubuntu' -and $env:DISTRO_VERSION_ID -like '14*') -or ($env:DISTRO_NAME -like 'CentOS*' -and $env:DISTRO_VERSION_ID -like '7')) {
+            $output = ExecCmd -Command 'who' -ArgumentsList '-m'
+        } else {
+            $output = ExecCmd -Command 'who'
+        }
+
+        return ($output.Trim() -replace '\s+', '')[0]
+    }
 }
 
 class Parted {

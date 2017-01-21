@@ -7,7 +7,7 @@ InModuleScope RaspberryPi-PoSh {
             $file = Copy-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'assets\config.txt') -Destination $TestDrive -PassThru -Force
         }
 
-        It "Should be able to add missing settings" {
+        It "Should be able to add new settings" {
             $customSettings = @{
                 max_usb_current = 1
             }
@@ -22,6 +22,8 @@ InModuleScope RaspberryPi-PoSh {
         It "Should be able to update existing settings" {
             $customSettings = @{
                 initial_turbo = 30
+                gpu_mem = 320
+				gpu_mem_1024 = 320
             }
             
             $configFile = [ConfigFile]::new($TestDrive)
@@ -29,6 +31,7 @@ InModuleScope RaspberryPi-PoSh {
             $configFile.Save()
 
             $file | Should Contain "^  initial_turbo=30$"
+            $file | Should Contain "^  gpu_mem=320$"
         }
     }
 }
