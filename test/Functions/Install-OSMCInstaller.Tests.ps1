@@ -8,9 +8,10 @@ InModuleScope RaspberryPi-PoSh {
             $SDDevicePath = '/dev/loop0'
 
             $Path = $env:HOME
-			if ($env:USER -eq 'root') {
-				$Path = Join-Path -Path '/home' -ChildPath ([Utility]::Who())
-			}
+            if ($env:USER -eq 'root') {
+                $childPath = [Utility]::Who()
+                $Path = Join-Path -Path '/home' -ChildPath $childPath
+            }
 
             $FilePath = $FilePath = Get-ChildItem -Path (Join-Path -Path $Path -ChildPath 'Downloads/') -Filter "OSMC_TGT_rbp2_*.img.gz" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
 

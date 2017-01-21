@@ -12,9 +12,10 @@ InModuleScope RaspberryPi-PoSh {
             $USBDevicePath = '/dev/loop1'
 
             $Path = $env:HOME
-			if ($env:USER -eq 'root') {
-				$Path = Join-Path -Path '/home' -ChildPath ([Utility]::Who())
-			}
+            if ($env:USER -eq 'root') {
+                $childPath = [Utility]::Who()
+                $Path = Join-Path -Path '/home' -ChildPath $childPath
+            }
 
             $FilePath = Join-Path -Path $Path -ChildPath 'Downloads/LibreELEC-RPi2.arm-7.0.3.tar'
 

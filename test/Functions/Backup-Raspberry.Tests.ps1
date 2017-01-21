@@ -9,7 +9,8 @@ InModuleScope RaspberryPi-PoSh {
 
             $Path = $env:HOME
             if ($env:USER -eq 'root') {
-                $Path = Join-Path -Path '/home' -ChildPath ([Utility]::Who())
+                $childPath = [Utility]::Who()
+                $Path = Join-Path -Path '/home' -ChildPath $childPath
             }
 
             $FilePath = Get-ChildItem -Path (Join-Path -Path $Path -ChildPath 'Downloads/') -Filter "LibreELEC-RPi2.arm-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
