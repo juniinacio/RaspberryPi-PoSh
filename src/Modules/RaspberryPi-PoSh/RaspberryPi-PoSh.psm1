@@ -213,12 +213,10 @@ class Utility {
 
     static [string] Who () {
         if (($env:DISTRO_NAME -eq 'Ubuntu' -and $env:DISTRO_VERSION_ID -like '14*') -or ($env:DISTRO_NAME -like 'CentOS*' -and $env:DISTRO_VERSION_ID -like '7')) {
-            $output = ExecCmd -Command 'who' -ArgumentsList 'am', 'i'
+            $output = ExecCmd -Command 'logname'
         } else {
             $output = ExecCmd -Command 'who'
         }
-
-        Set-Content -Path '/tmp/test' -Value $output
 
         return ($output.trim() -split '\s+', '')[0]
     }
