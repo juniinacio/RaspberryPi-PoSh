@@ -213,9 +213,9 @@ class Utility {
 
     static [string] Who () {
         if (($env:DISTRO_NAME -eq 'Ubuntu' -and $env:DISTRO_VERSION_ID -like '14*') -or ($env:DISTRO_NAME -like 'CentOS*' -and $env:DISTRO_VERSION_ID -eq '7')) {
-            $output = & who am i | awk '{print $1;}'
+            $output = who am i | awk '{print $1;}'
         } else {
-            $output = & who | awk '{print $1;}'
+            $output = who | awk '{print $1;}'
         }
 
         return $output.trim()
