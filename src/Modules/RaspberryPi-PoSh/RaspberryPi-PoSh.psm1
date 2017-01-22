@@ -213,12 +213,12 @@ class Utility {
 
     static [string] Who () {
         if (($env:DISTRO_NAME -eq 'Ubuntu' -and $env:DISTRO_VERSION_ID -like '14*') -or ($env:DISTRO_NAME -like 'CentOS*' -and $env:DISTRO_VERSION_ID -eq '7')) {
-            $output = ExecCmd -Command 'logname'
+            $output = & who am i | awk '{print $1;}'
         } else {
-            $output = ExecCmd -Command 'who'
+            $output = & who | awk '{print $1;}'
         }
 
-        return ($output.trim() -split '\s+', '')[0]
+        return $output.trim()
     }
 }
 
