@@ -9,6 +9,11 @@ InModuleScope RaspberryPi-PoSh {
 
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             [Losetup]::Attach($SD, $SDDeviceFilePath)
+
+            [Parted]::MKLabel($SD, 'msdos')
+
+            [Parted]::MKPart($SD, 'primary', 'cyl', 'fat32', 0, 65)
+            [Parted]::MKPart($SD, 'primary', 'cyl', 'ext2', 65, -2)
         }
 
         It "Should be able to inform the kernel of partition table changes" {
