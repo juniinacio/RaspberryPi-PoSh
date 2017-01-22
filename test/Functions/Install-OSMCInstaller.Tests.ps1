@@ -3,8 +3,14 @@ Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/Rasp
 InModuleScope RaspberryPi-PoSh {
     Describe "Install-OSMCInstaller" -Tags "CI" {
         BeforeAll {
-            $SDDeviceFilePath = Join-Path -Path $TestDrive -ChildPath "SD-4gb.img"
-            [Utility]::DD('/dev/zero', $SDDeviceFilePath, 1048576, $(4gb/1048576))
+            $Skip = $false
+
+            $SDDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "SD-4gb.img"
+            if (-not (Test-Path -Path $SDDeviceFilePath -PathType Leaf)) {
+                $Skip = $true
+                return
+            }
+            
             $SDDevicePath = '/dev/loop0'
 
             $FilePath = Get-ChildItem -Path '/downloads' -Filter "OSMC_TGT_rbp2_*.img.gz" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
@@ -13,7 +19,7 @@ InModuleScope RaspberryPi-PoSh {
             [Losetup]::Attach($SD, $SDDeviceFilePath)
         }
 
-        It "Should be able to install SD" {
+        It "Should be able to install SD" -Skip:$Skip {
             Install-OSMCInstaller -SDDevicePath $SDDevicePath -FilePath $FilePath
 
             $mountpoint = Join-Path -Path $TestDrive -ChildPath "System"
@@ -53,7 +59,7 @@ InModuleScope RaspberryPi-PoSh {
             Remove-Item -Path $mountpoint -Recurse -Force
         }
 
-        It "Should be able to install to USB and turn WiFi on" {
+        It "Should be able to install to USB and turn WiFi on" -Skip:$Skip {
             Install-OSMCInstaller -SDDevicePath $SDDevicePath -FilePath $FilePath -USB -WLAN -KeyType 'WPA/WPA2_PSK' -Key '123456' -SSID  'Network 1'
 
             $mountpoint = Join-Path -Path $TestDrive -ChildPath "System"
@@ -97,8 +103,10 @@ InModuleScope RaspberryPi-PoSh {
         }
 
         AfterAll {
-            $SD = [DeviceService]::GetDevice($SDDevicePath)
-            [Losetup]::Detach($SD)
+            if (-not $Skip) {
+                $SD = [DeviceService]::GetDevice($SDDevicePath)
+                [Losetup]::Detach($SD)
+            }
         }
     }
 }

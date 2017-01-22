@@ -3,19 +3,28 @@ Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/Rasp
 InModuleScope RaspberryPi-PoSh {
     Describe "Mkfs" {
         BeforeAll {
-            $SDDeviceFilePath = Join-Path -Path $TestDrive -ChildPath "SD-4gb.img"
-            [Utility]::DD('/dev/zero', $SDDeviceFilePath, 1048576, $(4gb/1048576))
+            $Skip = $false
+
+            $SDDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "SD-4gb.img"
+            if (-not (Test-Path -Path $SDDeviceFilePath -PathType Leaf)) {
+                $Skip = $true
+                return
+            }
+            
             $SDDevicePath = [Losetup]::Lookup()
 
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             [Losetup]::Attach($SD, $SDDeviceFilePath)
 
+            [Utility]::DD('/dev/zero', $SD.GetPath(), 512, 1)
+
             [Parted]::MKLabel($SD, 'msdos')
+            
             [Parted]::MKPart($SD, 'primary', 'cyl', 'fat32', 0, 65)
             [Parted]::MKPart($SD, 'primary', 'cyl', 'ext2', 65, -2)
         }
 
-        It "Should be able to create fat filesystem" {
+        It "Should be able to create fat filesystem" -Skip:$Skip {
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             [Mkfs]::VFat($SD.GetPartition(0), 'SYSTEM', 32)
             
@@ -24,7 +33,7 @@ InModuleScope RaspberryPi-PoSh {
             ($SD.GetPartition(0)).FSType | Should Be "vfat"
         }
 
-        It "Should be able to create ext4 filesystem" {
+        It "Should be able to create ext4 filesystem" -Skip:$Skip {
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             [Mkfs]::Ext4($SD.GetPartition(1), 'STORAGE')
 
@@ -34,8 +43,10 @@ InModuleScope RaspberryPi-PoSh {
         }
 
         AfterAll {
-            $SD = [DeviceService]::GetDevice($SDDevicePath)
-            [Losetup]::Detach($SD)
+            if (-not $Skip) {
+                $SD = [DeviceService]::GetDevice($SDDevicePath)
+                [Losetup]::Detach($SD)
+            }
         }
     }
 }
