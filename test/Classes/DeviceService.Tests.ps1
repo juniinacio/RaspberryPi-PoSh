@@ -45,7 +45,7 @@ NAME="mmcblk0p1" FSTYPE="vfat" SIZE="533725184" MOUNTPOINT="/tmp/5690122e-d905-4
             $devices | Where-Object {$_.Name -eq 'sda'} | Should Be $null
         }
 
-        It "Should be able to return /dev/sda" {
+        It "Should be able to return device /dev/sda" {
             [DeviceService]::GetDevices('sda') | Should Not Be $null
         }
     }

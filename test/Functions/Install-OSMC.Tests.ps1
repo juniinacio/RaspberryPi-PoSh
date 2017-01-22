@@ -11,13 +11,7 @@ InModuleScope RaspberryPi-PoSh {
             [Utility]::DD('/dev/zero', $USBDeviceFilePath, 1048576, $(8gb/1048576))
             $USBDevicePath = '/dev/loop1'
 
-            $Path = $env:HOME
-            if ($env:USER -eq 'root') {
-                $childPath = [Utility]::Who()
-                $Path = Join-Path -Path '/home' -ChildPath $childPath
-            }
-
-            $FilePath = Get-ChildItem -Path (Join-Path -Path $Path -ChildPath 'Downloads/') -Filter "OSMC_TGT_rbp2_*.img.gz" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
+            $FilePath = Get-ChildItem -Path '/downloads' -Filter "OSMC_TGT_rbp2_*.img.gz" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
 
             $RestoreFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'assets/RestoreFileOSMC.tar'
         }

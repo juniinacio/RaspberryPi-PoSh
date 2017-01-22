@@ -7,13 +7,7 @@ InModuleScope RaspberryPi-PoSh {
             [Utility]::DD('/dev/zero', $SDDeviceFilePath, 1048576, $(4gb/1048576))
             $SDDevicePath = [Losetup]::Lookup()
 
-            $Path = $env:HOME
-            if ($env:USER -eq 'root' -or [string]::IsNullOrEmpty($env:USER)) {
-                $childPath = [Utility]::Who()
-                $Path = Join-Path -Path '/home' -ChildPath $childPath
-            }
-
-            $FilePath = Get-ChildItem -Path (Join-Path -Path $Path -ChildPath 'Downloads/') -Filter "LibreELEC-RPi2.arm-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
+            $FilePath = Get-ChildItem -Path '/downloads' -Filter "LibreELEC-RPi2.arm-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
 
             $RestoreFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'assets/RestoreFileELEC.tar'
 

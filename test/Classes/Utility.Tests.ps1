@@ -54,10 +54,6 @@ InModuleScope RaspberryPi-PoSh {
             $file.Length | Should Be 400mb
         }
 
-        It "Should be able to return username" {
-            [Utility]::Who() | Should Not BeNullOrEmpty
-        }
-
         AfterAll {
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             [Losetup]::Detach($SD)

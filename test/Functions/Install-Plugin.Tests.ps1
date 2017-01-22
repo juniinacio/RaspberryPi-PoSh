@@ -11,17 +11,11 @@ InModuleScope RaspberryPi-PoSh {
             [Utility]::DD('/dev/zero', $USBDeviceFilePath, 1048576, $(8gb/1048576))
             $USBDevicePath = '/dev/loop1'
 
-            $Path = $env:HOME
-            if ($env:USER -eq 'root') {
-                $childPath = [Utility]::Who()
-                $Path = Join-Path -Path '/home' -ChildPath $childPath
-            }
-
-            $FilePath = Join-Path -Path $Path -ChildPath 'Downloads/LibreELEC-RPi2.arm-7.0.3.tar'
+            $FilePath = Get-ChildItem -Path '/downloads' -Filter "LibreELEC-RPi2.arm-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
 
             $RestoreFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'assets/RestoreFileELEC.tar'
 
-            $Plugins = Get-ChildItem -Path $Path -Filter "Downloads/plugin.video.*.zip" | Select-Object -ExpandProperty FullName
+            $Plugins = Get-ChildItem -Path '/downloads' -Filter "plugin.video.*.zip" | Select-Object -ExpandProperty FullName
 
             Install-LibreELEC -SDDevicePath $SDDevicePath -SDDeviceFilePath $SDDeviceFilePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
 
