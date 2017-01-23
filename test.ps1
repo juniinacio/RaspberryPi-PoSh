@@ -20,7 +20,7 @@ if (-not (Test-Path -Path "$PSScriptRoot/artifacts" -PathType Container)) {
     New-Item -Path "$PSScriptRoot/artifacts" -ItemType Directory | Out-Null
 }
 
-# sudo dd if=/dev/zero of=/downloads/SD-4gb.img  bs=1048576  count=4096 status=none
-# sudo dd if=/dev/zero of=/downloads/USB-4gb.img  bs=1048576  count=4096 status=none
+# Create test disk images:
+# sudo dd if=/dev/zero of=/downloads/SD-4gb.img  bs=1048576  count=4096 status=none && sudo dd if=/dev/zero of=/downloads/USB-4gb.img  bs=1048576  count=4096 status=none
 
 Invoke-Pester -Script "$PSScriptRoot/test" -EnableExit -OutputFile "$PSScriptRoot/artifacts/TestResults.xml" -OutputFormat NUnitXml @params
