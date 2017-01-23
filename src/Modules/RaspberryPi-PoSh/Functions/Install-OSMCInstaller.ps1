@@ -38,7 +38,8 @@
     Specifies the password of the wireless network.
 .PARAMETER SSID
     Specifies the SSID of the wireless network.
-.LINK
+.NOTES
+    Overclocking the Raspberry Pi? See here below some usefull resources.
     https://haydenjames.io/raspberry-pi-2-overclock/
     https://haydenjames.io/raspberry-pi-3-overclock/
 #>

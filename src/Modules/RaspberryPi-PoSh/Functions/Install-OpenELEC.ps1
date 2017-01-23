@@ -37,7 +37,8 @@
     Path to the backup file.
 .PARAMETER USBDevicePath
     Path to the USB device, e.g. /dev/sdc.
-.LINK
+.NOTES
+    Overclocking the Raspberry Pi? See here below some usefull resources.
     https://haydenjames.io/raspberry-pi-2-overclock/
     https://haydenjames.io/raspberry-pi-3-overclock/
 #>
