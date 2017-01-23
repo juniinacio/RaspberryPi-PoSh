@@ -73,31 +73,6 @@ InModuleScope RaspberryPi-PoSh {
             Remove-Item -Path $mountpoint -Recurse -Force
         }
 
-        It "Should be able to install USB" -Skip:$Skip {
-            Install-LibreELEC -SDDevicePath $SDDevicePath -USBDevicePath $USBDevicePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
-
-            $mountpoint = Join-Path -Path $TestDrive -ChildPath "Storage"
-
-            $null = New-Item -Path $mountpoint -ItemType Directory
-
-            $USB = [DeviceService]::GetDevice($USBDevicePath)
-
-            ($USB.GetPartition(0)).Label | Should Be "STORAGE"
-            ($USB.GetPartition(0)).FSType | Should Be "ext4"
-
-            $USB.GetPartition(1) | Should Be $null
-
-            [Utility]::Mount($USB.GetPartition(0), $mountpoint)
-
-            Test-Path -Path "$mountpoint/.kodi/addons" -PathType Container | Should Be $true
-            Test-Path -Path "$mountpoint/.kodi/userdata/guisettings.xml" -PathType Leaf | Should Be $true
-
-            $USB = [DeviceService]::GetDevice($USBDevicePath)
-            if ($USB.GetPartition(0).Umount()) {
-                [Utility]::Umount($USB.GetPartition(0))
-            }
-        }
-
         It "Should be able to install SD using noobs" -Skip:$Skip {
             $FilePath = Get-ChildItem -Path '/downloads' -Filter "LibreELEC-RPi2.arm-*-noobs*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
             
@@ -132,6 +107,31 @@ InModuleScope RaspberryPi-PoSh {
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             if ($SD.GetPartition(0).Umount()) {
                 [Utility]::Umount($SD.GetPartition(0))
+            }
+        }
+
+        It "Should be able to install USB" -Skip:$Skip {
+            Install-LibreELEC -SDDevicePath $SDDevicePath -USBDevicePath $USBDevicePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
+
+            $mountpoint = Join-Path -Path $TestDrive -ChildPath "Storage"
+
+            $null = New-Item -Path $mountpoint -ItemType Directory
+
+            $USB = [DeviceService]::GetDevice($USBDevicePath)
+
+            ($USB.GetPartition(0)).Label | Should Be "STORAGE"
+            ($USB.GetPartition(0)).FSType | Should Be "ext4"
+
+            $USB.GetPartition(1) | Should Be $null
+
+            [Utility]::Mount($USB.GetPartition(0), $mountpoint)
+
+            Test-Path -Path "$mountpoint/.kodi/addons" -PathType Container | Should Be $true
+            Test-Path -Path "$mountpoint/.kodi/userdata/guisettings.xml" -PathType Leaf | Should Be $true
+
+            $USB = [DeviceService]::GetDevice($USBDevicePath)
+            if ($USB.GetPartition(0).Umount()) {
+                [Utility]::Umount($USB.GetPartition(0))
             }
         }
 
