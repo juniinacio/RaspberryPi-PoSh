@@ -5,7 +5,7 @@ InModuleScope RaspberryPi-PoSh {
         BeforeAll {
             $Skip = $false
 
-            $SDDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "SD-4gb.img"
+            $SDDeviceFilePath = Join-Path -Path '/downloads' -ChildPath "SD-4gb.img"
             if (-not (Test-Path -Path $SDDeviceFilePath -PathType Leaf)) {
                 $Skip = $true
                 return
@@ -13,14 +13,13 @@ InModuleScope RaspberryPi-PoSh {
             
             $SDDevicePath = [Losetup]::Lookup()
 
+            [Losetup]::Attach($SDDevicePath, $SDDeviceFilePath)
+
             $FilePath = Get-ChildItem -Path '/downloads' -Filter "LibreELEC-RPi2.arm-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
 
             $RestoreFilePath = Join-Path -Path $PSScriptRoot -ChildPath 'assets/RestoreFileELEC.tar'
 
-            Install-LibreELEC -SDDevicePath $SDDevicePath -SDDeviceFilePath $SDDeviceFilePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
-
-            $SD = [DeviceService]::GetDevice($SDDevicePath)
-            [Losetup]::Attach($SD, $SDDeviceFilePath)
+            Install-LibreELEC -SDDevicePath $SDDevicePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
         }
 
         It "Should be able to create backup" -Skip:$Skip {
@@ -34,8 +33,7 @@ InModuleScope RaspberryPi-PoSh {
 
         AfterAll {
             if (-not $Skip) {
-                $SD = [DeviceService]::GetDevice($SDDevicePath)
-                [Losetup]::Detach($SD)
+                [Losetup]::Detach($SDDevicePath)
             }
         }
     }

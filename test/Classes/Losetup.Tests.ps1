@@ -5,26 +5,25 @@ InModuleScope RaspberryPi-PoSh {
         BeforeAll {
             $Skip = $false
 
-            $SDDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "SD-4gb.img"
+            $SDDeviceFilePath = Join-Path -Path '/downloads' -ChildPath "SD-4gb.img"
             if (-not (Test-Path -Path $SDDeviceFilePath -PathType Leaf)) {
                 $Skip = $true
                 return
             }
-            
-            $device = [Losetup]::Lookup()
-            $device = [DeviceService]::GetDevice($device)
+
+            $SDDevicePath = [Losetup]::Lookup()
         }
 
-        It "Should be able to return loop device" -Skip:$Skip {
-            $device.GetPath() | Should Match "^/dev/loop\d+$"
+        It "Should be able to return a free loopback device" {
+            [Losetup]::Lookup() | Should Match "^/dev/loop\d+$"
         }
 
-        It "Should be able to attach image to loop device" -Skip:$Skip {
-            {[Losetup]::Attach($device, $SDDeviceFilePath) } | Should Not Throw
+        It "Should be able to attach image to loopback device" -Skip:$Skip {
+            {[Losetup]::Attach($SDDevicePath, $SDDeviceFilePath) } | Should Not Throw
         }
 
-        It "Should be able to detach image from loop device" -Skip:$Skip {
-            { [Losetup]::Detach($device) } | Should Not Throw
+        It "Should be able to detach image from loopback device" -Skip:$Skip {
+            { [Losetup]::Detach($SDDevicePath) } | Should Not Throw
         }
     }
 }

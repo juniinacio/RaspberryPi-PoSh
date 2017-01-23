@@ -7,10 +7,6 @@
     The cmdlet supports two of the three types of LibreELEC distribution image file formats. The first being the .tar (LibreELEC-RPi2.arm-<version>.tar) and the noobs archive format (LibreELEC-RPi2.arm-<version>-noobs.tar.
 
     The cmdlet can do installs for all Raspberry Pi versions.
-
-    The cmdlet also supports installing to loop devices, to do this you have to prepare an empty image file before executing the cmdlet and pointing it to the image file using either the SDDeviceFilePath or the USBDeviceFilePath dynamic parameter. The SDDeviceFilePath or USBDeviceFilePath parameters are only available when either or both the SDDevicePath or USBDevicePath parameters are pointing to a loop back device, see the examples for more information about this functionality.
-
-    Note that when doing image provisioning the SDDevicePath or USBDevicePath must point to a free loop device.
 .EXAMPLE
     PS /> Install-LibreELEC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/LibreELEC-RPi2.arm-7.0.2.tar'
 
@@ -28,13 +24,11 @@
 
     This example shows how to do an advanced LibreELEC install to USB, specify custom settings and also restoring a previously taken backup.
 .EXAMPLE
-    PS /> Install-LibreELEC -SDDevicePath '/dev/loop0' -SDDeviceFilePath '/home/ubuntu/Images/LibreELEC-4gb-SD-20170117.img' -FilePath '/home/ubuntu/Downloads/LibreELEC-RPi2.arm-7.0.2.tar'
+    PS /> Install-LibreELEC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/LibreELEC-RPi2.arm-7.0.2.tar'
 
-    This example shows how to install LibreELEC using loopback devices.
+    This example shows how to install LibreELEC using loopback devices. Notice that before executing the cmdlet we have manually attached a disk image to the loopback device /dev/loop0.
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
-.PARAMETER SDDeviceFilePath
-    Path to the SD device image file, /home/ubuntu/Images/LibreELEC-4gb-SD-20170117.img.
 .PARAMETER FilePath
     Path to the LibreELEC image file. Please keep the original name as the cmdlet depends on it.
 .PARAMETER CustomSettings
@@ -43,8 +37,6 @@
     Path to the backup file.
 .PARAMETER USBDevicePath
     Path to the USB device, e.g. /dev/sdc.
-.PARAMETER USBDeviceFilePath
-    Path to the USB device image file, /home/ubuntu/Images/LibreELEC-16gb-USB-20170117.img.
 .LINK
     https://haydenjames.io/raspberry-pi-2-overclock/
     https://haydenjames.io/raspberry-pi-3-overclock/
@@ -93,81 +85,18 @@ function Install-LibreELEC {
         [string]
         $RestoreFilePath
     )
-
-    dynamicParam {
-        $dictionary = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
-        
-        if ($SDDevicePath -match '^/dev/loop\d{1}$') {
-            $parameterName = 'SDDeviceFilePath'
-
-            $attributes = [Parameter]::new()
-            $attributes.Mandatory = $true
-            $attributes.ParameterSetName = '__AllParameterSets'
-
-            $attributeCollection = [Collections.ObjectModel.Collection[Attribute]]@(
-                $attributes
-                [ValidateScript]::new({
-                    Test-Path -Path $_ -PathType Leaf
-                })
-            )
-
-            $parameter = [Management.Automation.RuntimeDefinedParameter]::new(
-                $parameterName,
-                [string],
-                $attributeCollection
-            )
-
-            $dictionary.Add($parameterName, $parameter)
-        }
-
-        if ($USBDevicePath -match '^/dev/loop\d{1}$') {
-            $parameterName = 'USBDeviceFilePath'
-
-            $attributes = [Parameter]::new()
-            $attributes.Mandatory = $true
-            $attributes.ParameterSetName = 'USB'
-
-            $attributeCollection = [Collections.ObjectModel.Collection[Attribute]]@(
-                $attributes
-                [ValidateScript]::new({
-                    Test-Path -Path $_ -PathType Leaf
-                })
-            )
-
-            $parameter = [Management.Automation.RuntimeDefinedParameter]::new(
-                $parameterName,
-                [string],
-                $attributeCollection
-            )
-
-            $dictionary.Add($parameterName, $parameter)
-        }
-
-        $dictionary
-    }
     
     begin {
-
         try {
             $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
             if ($SDDevice -eq $null) {
                 throw "Cannot find device '$SDDevicePath' because it does not exist."
             }
 
-            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
-                [Losetup]::Attach($SDDevice, $PSBoundParameters.SDDeviceFilePath)
-                $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            }
-
             if ($PSCmdlet.ParameterSetName -eq 'USB') {
                 $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
                 if ($USBDevice -eq $null) {
                     throw "Cannot find device '$USBDevicePath' because it does not exist."
-                }
-
-                if ($PSBoundParameters.ContainsKey('USBDeviceFilePath')) {
-                    [Losetup]::Attach($USBDevice, $PSBoundParameters.USBDeviceFilePath)
-                    $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
                 }
 
                 [Utility]::Umount($USBDevice)
@@ -231,16 +160,7 @@ function Install-LibreELEC {
                 if ($USBDevice.GetPartition(0).Umount()) {
                     [Utility]::Umount($USBDevice.GetPartition(0))
                 }
-
-                if ($PSBoundParameters.ContainsKey('USBDeviceFilePath')) {
-                    [Losetup]::Detach($USBDevice)
-                }
             }
-
-            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
-                [Losetup]::Detach($SDDevice)
-            }
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -248,7 +168,6 @@ function Install-LibreELEC {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # begin
     
     process {
@@ -270,11 +189,6 @@ function Install-LibreELEC {
             New-Item -Path $destination -ItemType Directory | Out-Null
 
             $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-
-            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
-                [Losetup]::Attach($SDDevice, $PSBoundParameters.SDDeviceFilePath)
-                $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            }
 
             if ($SDDevice.GetPartition(0).Umount()) {
                 [Utility]::Umount($SDDevice.GetPartition(0))
@@ -331,12 +245,7 @@ function Install-LibreELEC {
                 [Utility]::Umount($SDDevice.GetPartition(0))
             }
 
-            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
-                [Losetup]::Detach($SDDevice)
-            }
-
             Remove-Item -Path $destination -Recurse -Force
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -344,13 +253,10 @@ function Install-LibreELEC {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # process
     
     end {
-
         try {
-
             if ($PSBoundParameters.ContainsKey('RestoreFilePath')) {
 
                 $destination = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
@@ -363,16 +269,9 @@ function Install-LibreELEC {
                 if ($PSCmdlet.ParameterSetName -eq 'SD') {
                     $devicePath = $SDDevicePath
                     $index = 1
-                    $key = 'SDDeviceFilePath'
                 } else {
                     $devicePath = $USBDevicePath
                     $index = 0
-                    $key = 'USBDeviceFilePath'
-                }
-
-                if ($PSBoundParameters.ContainsKey($key)) {
-                    $device = [DeviceService]::GetDevice($devicePath)
-                    [Losetup]::Attach($device, $PSBoundParameters.Item($key))
                 }
 
                 $device = [DeviceService]::GetDevice($devicePath)
@@ -395,13 +294,8 @@ function Install-LibreELEC {
                     [Utility]::Umount($device.GetPartition($index))
                 }
 
-                if ($PSBoundParameters.ContainsKey($key)) {
-                    [Losetup]::Detach($device)
-                }
-
                 Remove-Item -Path $destination -Recurse -Force
             }
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -409,6 +303,5 @@ function Install-LibreELEC {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # end
 }

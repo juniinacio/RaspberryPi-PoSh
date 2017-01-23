@@ -5,7 +5,7 @@ InModuleScope RaspberryPi-PoSh {
         BeforeAll {
             $Skip = $false
 
-            $SDDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "SD-4gb.img"
+            $SDDeviceFilePath = Join-Path -Path '/downloads' -ChildPath "SD-4gb.img"
             if (-not (Test-Path -Path $SDDeviceFilePath -PathType Leaf)) {
                 $Skip = $true
                 return
@@ -13,10 +13,11 @@ InModuleScope RaspberryPi-PoSh {
             
             $SDDevicePath = [Losetup]::Lookup()
 
-            $SD = [DeviceService]::GetDevice($SDDevicePath)
-            [Losetup]::Attach($SD, $SDDeviceFilePath)
+            [Losetup]::Attach($SDDevicePath, $SDDeviceFilePath)
 
-            [Utility]::DD('/dev/zero', $SD.GetPath(), 512, 1)
+            [Utility]::DD('/dev/zero', $SDDevicePath, 512, 1)
+
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
         }
 
         It "Should be able to create label" -Skip:$Skip {
@@ -44,8 +45,7 @@ InModuleScope RaspberryPi-PoSh {
 
         AfterAll {
             if (-not $Skip) {
-                $SD = [DeviceService]::GetDevice($SDDevicePath)
-                [Losetup]::Detach($SD)
+                [Losetup]::Detach($SDDevicePath)
             }
         }
     }

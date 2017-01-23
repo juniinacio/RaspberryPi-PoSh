@@ -5,21 +5,25 @@ InModuleScope RaspberryPi-PoSh {
         BeforeAll {
             $Skip = $false
 
-            $SDDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "SD-4gb.img"
+            $SDDeviceFilePath = Join-Path -Path '/downloads' -ChildPath "SD-4gb.img"
             if (-not (Test-Path -Path $SDDeviceFilePath -PathType Leaf)) {
                 $Skip = $true
                 return
             }
 
-            $SDDevicePath = '/dev/loop0'
+            $SDDevicePath = [Losetup]::Lookup()
 
-            $USBDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "USB-8gb.img"
+            [Losetup]::Attach($SDDevicePath, $SDDeviceFilePath)
+
+            $USBDeviceFilePath = Join-Path -Path '/downloads' -ChildPath "USB-4gb.img"
             if (-not (Test-Path -Path $USBDeviceFilePath -PathType Leaf)) {
                 $Skip = $true
                 return
             }
 
-            $USBDevicePath = '/dev/loop1'
+            $USBDevicePath = [Losetup]::Lookup()
+
+			[Losetup]::Attach($USBDevicePath, $USBDeviceFilePath)
 
             $FilePath = Get-ChildItem -Path '/downloads' -Filter "OSMC_TGT_rbp2_*.img.gz" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
 
@@ -27,15 +31,11 @@ InModuleScope RaspberryPi-PoSh {
         }
 
         It "Should be able to install SD" -Skip:$Skip {
-            Install-OSMC -SDDevicePath $SDDevicePath -SDDeviceFilePath $SDDeviceFilePath -FilePath $FilePath
+            Install-OSMC -SDDevicePath $SDDevicePath -FilePath $FilePath
 
             $mountpoint = Join-Path -Path $TestDrive -ChildPath "System"
 
             $null = New-Item -Path $mountpoint -ItemType Directory
-
-            $SD = [DeviceService]::GetDevice($SDDevicePath)
-
-            [Losetup]::Attach($SD, $SDDeviceFilePath)
 
             $SD = [DeviceService]::GetDevice($SDDevicePath)
 
@@ -63,20 +63,14 @@ InModuleScope RaspberryPi-PoSh {
             if ($SD.GetPartition(0).Umount()) {
                 [Utility]::Umount($SD.GetPartition(0))
             }
-
-            [Losetup]::Detach($SD)
         }
 
         It "Should be able to install USB" -Skip:$Skip {
-            Install-OSMC -SDDevicePath $SDDevicePath -SDDeviceFilePath $SDDeviceFilePath -USBDevicePath $USBDevicePath -USBDeviceFilePath $USBDeviceFilePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
+            Install-OSMC -SDDevicePath $SDDevicePath -USBDevicePath $USBDevicePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
 
             $mountpoint = Join-Path -Path $TestDrive -ChildPath "Storage"
 
             $null = New-Item -Path $mountpoint -ItemType Directory
-
-            $USB = [DeviceService]::GetDevice($USBDevicePath)
-
-            [Losetup]::Attach($USB, $USBDeviceFilePath)
 
             $USB = [DeviceService]::GetDevice($USBDevicePath)
 
@@ -114,12 +108,13 @@ InModuleScope RaspberryPi-PoSh {
             if ($USB.GetPartition(0).Umount()) {
                 [Utility]::Umount($USB.GetPartition(0))
             }
-
-            [Losetup]::Detach($USB)
         }
 
         AfterAll {
-            
+            if (-not $Skip) {
+                [Losetup]::Detach($SDDevicePath)
+                [Losetup]::Detach($USBDevicePath)
+            }
         }
     }
 }

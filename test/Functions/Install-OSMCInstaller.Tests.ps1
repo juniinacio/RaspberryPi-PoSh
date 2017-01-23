@@ -5,18 +5,17 @@ InModuleScope RaspberryPi-PoSh {
         BeforeAll {
             $Skip = $false
 
-            $SDDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "SD-4gb.img"
+            $SDDeviceFilePath = Join-Path -Path '/downloads' -ChildPath "SD-4gb.img"
             if (-not (Test-Path -Path $SDDeviceFilePath -PathType Leaf)) {
                 $Skip = $true
                 return
             }
             
-            $SDDevicePath = '/dev/loop0'
+            $SDDevicePath = [Losetup]::Lookup()
+
+            [Losetup]::Attach($SDDevicePath, $SDDeviceFilePath)
 
             $FilePath = Get-ChildItem -Path '/downloads' -Filter "OSMC_TGT_rbp2_*.img.gz" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
-
-            $SD = [DeviceService]::GetDevice($SDDevicePath)
-            [Losetup]::Attach($SD, $SDDeviceFilePath)
         }
 
         It "Should be able to install SD" -Skip:$Skip {
@@ -104,8 +103,7 @@ InModuleScope RaspberryPi-PoSh {
 
         AfterAll {
             if (-not $Skip) {
-                $SD = [DeviceService]::GetDevice($SDDevicePath)
-                [Losetup]::Detach($SD)
+                [Losetup]::Detach($SDDevicePath)
             }
         }
     }

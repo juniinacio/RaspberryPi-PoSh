@@ -11,10 +11,6 @@
     OSMC can be downloaded from one of the following locations:
     http://download.osmc.tv/
     http://download.osmc.tv/installers/diskimages/ (direct link)
-
-    The cmdlet also supports installing to loop devices, to do this you have to prepare an empty image file before executing the cmdlet and pointing it to the image file using either the SDDeviceFilePath or the USBDeviceFilePath dynamic parameter. The SDDeviceFilePath or USBDeviceFilePath parameters are only available when either or both the SDDevicePath or USBDevicePath parameters are pointing to a loop back device, see the examples for more information about this functionality.
-
-    Note that when doing image provisioning the SDDevicePath or USBDevicePath must point to a free loop device.
 .EXAMPLE
     PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.sources.gz'
 
@@ -32,13 +28,11 @@
 
     This example shows how to do advanced install of OSMC, specifying some custom settings and also doing a restore from a previously taken backup using the Backup-Raspberry cmdlet.
 .EXAMPLE
-    PS /> Install-OSMC -SDDevicePath '/dev/loop0' -SDDeviceFilePath '/home/ubuntu/Images/OSMC-4gb-SD-20170117.img' -USBDevicePath '/dev/loop1' -USBDeviceFilePath '/home/ubuntu/Images/OSMC-16gb-USB-20170117.img' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -RestoreFilePath '/home/ubuntu/Backups/OSMC-20161223084639.tar'
+    PS /> Install-OSMC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -RestoreFilePath '/home/ubuntu/Backups/OSMC-20161223084639.tar'
 
-    This example shows how to install OSMC to USB using loop devices.
+    This example shows how to install OSMC using loopback devices. Notice that before executing the cmdlet we have manually attached a disk image to the loopback device /dev/loop0.
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
-.PARAMETER SDDeviceFilePath
-    Path to the SD device image file, /home/ubuntu/Images/OSMC-4gb-SD-20170117.sources.
 .PARAMETER FilePath
     Path to the OSMC image file. Please keep the original name as the cmdlet depends on it.
 .PARAMETER CustomSettings
@@ -47,8 +41,6 @@
     Path to the backup file.
 .PARAMETER USBDevicePath
     Path to the USB device, e.g. /dev/sdc.
-.PARAMETER USBDeviceFilePath
-    Path to the USB device image file, /home/ubuntu/Images/OSMC-16gb-USB-20170117.sources.
 .LINK
     https://haydenjames.io/raspberry-pi-2-overclock/
     https://haydenjames.io/raspberry-pi-3-overclock/
@@ -97,82 +89,18 @@ function Install-OSMC {
         [string]
         $RestoreFilePath
     )
-
-    dynamicParam {
-        $dictionary = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
-        
-        if ($SDDevicePath -match '^/dev/loop\d{1}$') {
-            $parameterName = 'SDDeviceFilePath'
-
-            $attributes = [Parameter]::new()
-            $attributes.Mandatory = $true
-            $attributes.ParameterSetName = '__AllParameterSets'
-
-            $attributeCollection = [Collections.ObjectModel.Collection[Attribute]]@(
-                $attributes
-                [ValidateScript]::new({
-                    Test-Path -Path $_ -PathType Leaf
-                })
-            )
-
-            $parameter = [Management.Automation.RuntimeDefinedParameter]::new(
-                $parameterName,
-                [string],
-                $attributeCollection
-            )
-
-            $dictionary.Add($parameterName, $parameter)
-        }
-
-        if ($USBDevicePath -match '^/dev/loop\d{1}$') {
-            $parameterName = 'USBDeviceFilePath'
-
-            $attributes = [Parameter]::new()
-            $attributes.Mandatory = $true
-            $attributes.ParameterSetName = 'USB'
-
-            $attributeCollection = [Collections.ObjectModel.Collection[Attribute]]@(
-                $attributes
-                [ValidateScript]::new({
-                    Test-Path -Path $_ -PathType Leaf
-                })
-            )
-
-            $parameter = [Management.Automation.RuntimeDefinedParameter]::new(
-                $parameterName,
-                [string],
-                $attributeCollection
-            )
-
-            $dictionary.Add($parameterName, $parameter)
-        }
-
-        $dictionary
-    }
     
     begin {
-
         try {
-
             $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
             if ($SDDevice -eq $null) {
                 throw "Cannot find device '$SDDevicePath' because it does not exist."
-            }
-
-            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
-                [Losetup]::Attach($SDDevice, $PSBoundParameters.SDDeviceFilePath)
-                $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
             }
 
             if ($PSCmdlet.ParameterSetName -eq 'USB') {
                 $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
                 if ($USBDevice -eq $null) {
                     throw "Cannot find device '$USBDevicePath' because it does not exist."
-                }
-
-                if ($PSBoundParameters.ContainsKey('USBDeviceFilePath')) {
-                    [Losetup]::Attach($USBDevice, $PSBoundParameters.USBDeviceFilePath)
-                    $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
                 }
 
                 [Utility]::Umount($USBDevice)
@@ -236,16 +164,7 @@ function Install-OSMC {
                 if ($USBDevice.GetPartition(0).Umount()) {
                     [Utility]::Umount($USBDevice.GetPartition(0))
                 }
-
-                if ($PSBoundParameters.ContainsKey('USBDeviceFilePath')) {
-                    [Losetup]::Detach($USBDevice)
-                }
             }
-
-            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
-                [Losetup]::Detach($SDDevice)
-            }
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -253,13 +172,10 @@ function Install-OSMC {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # begin
     
     process {
-
         try {
-
             ############################################
             # Copy OSMC files to storage
             #
@@ -288,16 +204,9 @@ function Install-OSMC {
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
                 $devicePath = $SDDevicePath
                 $index = 1
-                $key = 'SDDeviceFilePath'
             } else {
                 $devicePath = $USBDevicePath
                 $index = 0
-                $key = 'USBDeviceFilePath'
-            }
-
-            if ($PSBoundParameters.ContainsKey($key)) {
-                $device = [DeviceService]::GetDevice($devicePath)
-                [Losetup]::Attach($device, $PSBoundParameters.Item($key))
             }
 
             $device = [DeviceService]::GetDevice($devicePath)
@@ -354,10 +263,6 @@ function Install-OSMC {
                 [Utility]::Umount($device.GetPartition($index))
             }
 
-            if ($PSBoundParameters.ContainsKey($key)) {
-                [Losetup]::Detach($device)
-            }
-
             $loop = [DeviceService]::GetDevice($loopPath)
             if ($loop.GetPartition(0).Umount()) {
                 [Utility]::Umount($loop.GetPartition(0))
@@ -388,12 +293,6 @@ function Install-OSMC {
             New-Item -Path $destination -ItemType Directory | Out-Null
 
             $SD = [DeviceService]::GetDevice($SDDevicePath)
-
-            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
-                [Losetup]::Attach($SD, $PSBoundParameters.SDDeviceFilePath)
-                $SD = [DeviceService]::GetDevice($SDDevicePath)
-            }
-
             if ($SD.GetPartition(0).Umount()) {
                 [Utility]::Umount($SD.GetPartition(0))
             }
@@ -417,14 +316,6 @@ function Install-OSMC {
                 }
 
             } else {
-
-                $USB = [DeviceService]::GetDevice($USBDevicePath)
-
-                if ($PSBoundParameters.ContainsKey('USBDeviceFilePath')) {
-                    [Losetup]::Attach($USB, $PSBoundParameters.USBDeviceFilePath)
-                    $USB = [DeviceService]::GetDevice($USBDevicePath)
-                }
-
                 $USB = [DeviceService]::GetDevice($USBDevicePath)
                 if ($USB.GetPartition(0).Umount()) {
                     [Utility]::Umount($USB.GetPartition(0))
@@ -442,10 +333,6 @@ function Install-OSMC {
                 $USB = [DeviceService]::GetDevice($USBDevicePath)
                 if ($USB.GetPartition(0).Umount()) {
                     [Utility]::Umount($USB.GetPartition(0))
-                }
-
-                if ($PSBoundParameters.ContainsKey('USBDeviceFilePath')) {
-                    [Losetup]::Detach($USB)
                 }
             }
 
@@ -498,13 +385,8 @@ function Install-OSMC {
                 [Utility]::Umount($SD.GetPartition(0))
             }
 
-            if ($PSBoundParameters.ContainsKey('SDDeviceFilePath')) {
-                [Losetup]::Detach($SDDevice)
-            }
-
             Remove-Item -Path $source -Recurse -Force
             Remove-Item -Path $destination -Recurse -Force
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -512,13 +394,10 @@ function Install-OSMC {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # process
     
     end {
-
         try {
-
             if ($PSBoundParameters.ContainsKey('RestoreFilePath')) {
 
                 $destination = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
@@ -531,16 +410,9 @@ function Install-OSMC {
                 if ($PSCmdlet.ParameterSetName -eq 'SD') {
                     $devicePath = $SDDevicePath
                     $index = 1
-                    $key = 'SDDeviceFilePath'
                 } else {
                     $devicePath = $USBDevicePath
                     $index = 0
-                    $key = 'USBDeviceFilePath'
-                }
-
-                if ($PSBoundParameters.ContainsKey($key)) {
-                    $device = [DeviceService]::GetDevice($devicePath)
-                    [Losetup]::Attach($device, $PSBoundParameters.Item($key))
                 }
 
                 $device = [DeviceService]::GetDevice($devicePath)
@@ -565,13 +437,8 @@ function Install-OSMC {
                     [Utility]::Umount($device.GetPartition($index))
                 }
 
-                if ($PSBoundParameters.ContainsKey($key)) {
-                    [Losetup]::Detach($device)
-                }
-
                 Remove-Item -Path $destination -Recurse -Force
             }
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -579,6 +446,5 @@ function Install-OSMC {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # end
 }

@@ -5,21 +5,15 @@ InModuleScope RaspberryPi-PoSh {
         BeforeAll {
             $Skip = $false
 
-            $SDDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "SD-4gb.img"
+            $SDDeviceFilePath = Join-Path -Path '/downloads' -ChildPath "SD-4gb.img"
             if (-not (Test-Path -Path $SDDeviceFilePath -PathType Leaf)) {
                 $Skip = $true
                 return
             }
 
-            $SDDevicePath = '/dev/loop0'
-            
-            $USBDeviceFilePath = Join-Path -Path '/tmp' -ChildPath "USB-8gb.img"
-            if (-not (Test-Path -Path $USBDeviceFilePath -PathType Leaf)) {
-                $Skip = $true
-                return
-            }
+            $SDDevicePath = [Losetup]::Lookup()
 
-            $USBDevicePath = '/dev/loop1'
+            [Losetup]::Attach($SDDevicePath, $SDDeviceFilePath)
 
             $FilePath = Get-ChildItem -Path '/downloads' -Filter "LibreELEC-RPi2.arm-*" | Sort-Object -Property LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
 
@@ -27,11 +21,7 @@ InModuleScope RaspberryPi-PoSh {
 
             $Plugins = Get-ChildItem -Path '/downloads' -Filter "plugin.video.*.zip" | Select-Object -ExpandProperty FullName
 
-            Install-LibreELEC -SDDevicePath $SDDevicePath -SDDeviceFilePath $SDDeviceFilePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
-
-            $SD = [DeviceService]::GetDevice($SDDevicePath)
-
-            [Losetup]::Attach($SD, $SDDeviceFilePath)
+            Install-LibreELEC -SDDevicePath $SDDevicePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
         }
 
         It "Should be able to install SD" -Skip:$Skip {
@@ -56,8 +46,7 @@ InModuleScope RaspberryPi-PoSh {
 
         AfterAll {
             if (-not $Skip) {
-                $SD = [DeviceService]::GetDevice($SDDevicePath)
-                [Losetup]::Detach($SD)
+                [Losetup]::Detach($SDDevicePath)
             }
         }
     }
