@@ -55,7 +55,6 @@ function Backup-Raspberry {
     )
 
     process {
-
         try {
             if (-not $PSBoundParameters.ContainsKey('FilePath')) {
                 $FilePath = Join-Path -Path $Env:HOME -ChildPath ('Backups/Kodi-{0}.tar' -f (Get-Date -format 'yyyyMMddHHmmss'))
@@ -107,7 +106,6 @@ function Backup-Raspberry {
             }
 
             Remove-Item -Path $source -Recurse -Force
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -115,6 +113,5 @@ function Backup-Raspberry {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # process
 }

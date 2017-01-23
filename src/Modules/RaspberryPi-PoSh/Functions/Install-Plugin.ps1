@@ -106,7 +106,6 @@ function Install-Plugin {
 
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # begin
 
     process {

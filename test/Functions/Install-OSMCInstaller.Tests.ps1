@@ -58,7 +58,7 @@ InModuleScope RaspberryPi-PoSh {
             Remove-Item -Path $mountpoint -Recurse -Force
         }
 
-        It "Should be able to install to USB and turn WiFi on" -Skip:$Skip {
+        It "Should be able to install USB and configure wireless network" -Skip:$Skip {
             Install-OSMCInstaller -SDDevicePath $SDDevicePath -FilePath $FilePath -USB -WLAN -KeyType 'WPA/WPA2_PSK' -Key '123456' -SSID  'Network 1'
 
             $mountpoint = Join-Path -Path $TestDrive -ChildPath "System"
