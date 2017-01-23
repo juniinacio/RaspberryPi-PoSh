@@ -1,7 +1,7 @@
 Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/RaspberryPi-PoSh/RaspberryPi-PoSh.psd1')
 
 InModuleScope RaspberryPi-PoSh {
-    Describe "DeviceService" {
+    Describe "DeviceService" -Tags "CI" {
         It "Should be able to discover devices" {
             Mock ExecCmd {
                 return @'

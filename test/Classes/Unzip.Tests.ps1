@@ -1,7 +1,7 @@
 Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/RaspberryPi-PoSh/RaspberryPi-PoSh.psd1')
 
 InModuleScope RaspberryPi-PoSh {
-    Describe "Unzip" {
+    Describe "Unzip" -Tags "CI" {
         It "Should be able to extract content information" {
             $file = Join-Path -Path $PSScriptRoot -ChildPath 'assets/plugin.video.good.zip'
             ([Unzip]::ZipInfo($file) -contains 'plugin.video.good/addon.xml') | Should Be $true

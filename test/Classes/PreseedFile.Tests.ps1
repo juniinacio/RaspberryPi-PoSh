@@ -1,7 +1,7 @@
 Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/RaspberryPi-PoSh/RaspberryPi-PoSh.psd1')
 
 InModuleScope RaspberryPi-PoSh {
-    Describe "PreseedFile" {
+    Describe "PreseedFile" -Tags "CI" {
         BeforeAll {
             $file = Join-Path -Path $TestDrive -ChildPath 'preseed.cfg'
         }

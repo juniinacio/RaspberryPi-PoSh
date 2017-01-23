@@ -1,11 +1,18 @@
 #!/usr/bin/env powershell
 [CmdletBinding()]
 Param (
-    # The name of the test to run
-    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true)]
+    # Informs Invoke-Pester to only run Describe blocks that match this name.
+    [Parameter(Mandatory = $false, Position = 0)]
     [ValidateNotNullOrEmpty()]
-    [string]
-    $TestName
+    [string[]]
+    $TestName,
+
+    # Informs Invoke-Pester to only run Describe blocks tagged with the tags specified. Aliased 'Tags' for backwards compatibility.
+    [Parameter(Mandatory = $false, Position = 1)]
+    [ValidateNotNullOrEmpty()]
+    [Alias('Tags')]
+    [string[]]
+    $Tag
 )
 
 Import-Module -Name Pester
@@ -14,6 +21,10 @@ $params = @{}
 
 if ($PSBoundParameters.ContainsKey('TestName')) {
     $params.Add('TestName', $TestName)
+}
+
+if ($PSBoundParameters.ContainsKey('Tag')) {
+    $params.Add('Tag', $Tag)
 }
 
 if (-not (Test-Path -Path "$PSScriptRoot/artifacts" -PathType Container)) {

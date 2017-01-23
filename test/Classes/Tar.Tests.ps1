@@ -1,7 +1,7 @@
 Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/RaspberryPi-PoSh/RaspberryPi-PoSh.psd1')
 
 InModuleScope RaspberryPi-PoSh {
-    Describe "Tar" {
+    Describe "Tar" -Tags "CI" {
         BeforeAll {
             $file = Join-Path -Path $PSScriptRoot -ChildPath 'assets/sample.backup.tar'
             $destination = Join-Path -Path $TestDrive -ChildPath "tmp"

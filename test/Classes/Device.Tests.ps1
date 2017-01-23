@@ -1,7 +1,7 @@
 Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/RaspberryPi-PoSh/RaspberryPi-PoSh.psd1')
 
 InModuleScope RaspberryPi-PoSh {
-    Describe "Device" {
+    Describe "Device" -Tags "CI" {
         $device = [Device]::new('mmcblk0', '', '3904897024', '', 'disk', '', 1)
 
         $partition = [Device]::new('mmcblk0p1', 'vfat', '533725184', '/media/ubuntu/SYSTEM', 'part', 'SYSTEM', 1)
