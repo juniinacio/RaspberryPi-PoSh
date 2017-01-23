@@ -25,7 +25,7 @@ InModuleScope RaspberryPi-PoSh {
             [Parted]::MKPart($SD, 'primary', 'cyl', 'ext2', 65, -2)
         }
 
-        It "Should be able to create fat filesystem" -Skip:$Skip {
+        It "Should be able to create fat filesystems" -Skip:$Skip {
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             [Mkfs]::VFat($SD.GetPartition(0), 'SYSTEM', 32)
             
@@ -34,7 +34,7 @@ InModuleScope RaspberryPi-PoSh {
             ($SD.GetPartition(0)).FSType | Should Be "vfat"
         }
 
-        It "Should be able to create ext4 filesystem" -Skip:$Skip {
+        It "Should be able to create ext4 filesystems" -Skip:$Skip {
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             [Mkfs]::Ext4($SD.GetPartition(1), 'STORAGE')
 

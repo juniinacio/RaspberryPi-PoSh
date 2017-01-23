@@ -25,7 +25,7 @@ InModuleScope RaspberryPi-PoSh {
             [Parted]::MKPart($SD, 'primary', 'cyl', 'ext2', 65, -2)
         }
 
-        It "Should be able to inform the kernel of partition table changes" -Skip:$Skip {
+        It "Should be able to inform the kernel if partition table changes" -Skip:$Skip {
             [Partprobe]::Probe($SD) | Should Not Throw [System.Exception]
         }
 

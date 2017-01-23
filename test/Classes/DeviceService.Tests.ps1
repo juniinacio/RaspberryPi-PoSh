@@ -2,7 +2,7 @@ Import-Module $(Join-Path -Path $PSScriptRoot -ChildPath '../../src/Modules/Rasp
 
 InModuleScope RaspberryPi-PoSh {
     Describe "DeviceService" {
-        It "Should be able to return devices" {
+        It "Should be able to discover devices" {
             Mock ExecCmd {
                 return @'
 NAME="sda" FSTYPE="" SIZE="512110190592" MOUNTPOINT="" TYPE="disk" LABEL="" HOTPLUG="0"

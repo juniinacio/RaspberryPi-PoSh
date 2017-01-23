@@ -22,7 +22,7 @@ InModuleScope RaspberryPi-PoSh {
             Install-LibreELEC -SDDevicePath $SDDevicePath -FilePath $FilePath -RestoreFilePath $RestoreFilePath
         }
 
-        It "Should be able to create backup" -Skip:$Skip {
+        It "Should be able to create backups" -Skip:$Skip {
             $Path = Join-Path -Path $TestDrive -ChildPath 'LibreELEC.tar'
 
             Backup-Raspberry -SDDevicePath $SDDevicePath -Path $Path

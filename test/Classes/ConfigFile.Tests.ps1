@@ -7,7 +7,7 @@ InModuleScope RaspberryPi-PoSh {
             $file = Copy-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'assets\config.txt') -Destination $TestDrive -PassThru -Force
         }
 
-        It "Should be able to add new settings" {
+        It "Should be able to add settings" {
             $customSettings = @{
                 max_usb_current = 1
             }
@@ -19,7 +19,7 @@ InModuleScope RaspberryPi-PoSh {
             $file | Should Contain "^  max_usb_current=1$"
         }
 
-        It "Should be able to update existing settings" {
+        It "Should be able to update settings" {
             $customSettings = @{
                 initial_turbo = 30
                 gpu_mem = 320

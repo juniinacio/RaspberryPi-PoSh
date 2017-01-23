@@ -20,11 +20,11 @@ InModuleScope RaspberryPi-PoSh {
             $SD = [DeviceService]::GetDevice($SDDevicePath)
         }
 
-        It "Should be able to create label" -Skip:$Skip {
+        It "Should be able to create disk labels" -Skip:$Skip {
             [Parted]::MKLabel($SD, 'msdos') | Should Be $null
         }
 
-        It "Should be able to create partition" -Skip:$Skip {
+        It "Should be able to create partitions" -Skip:$Skip {
             [Parted]::MKPart($SD, 'primary', 'cyl', 'fat32', 0, 65)
             [Parted]::MKPart($SD, 'primary', 'cyl', 'ext2', 65, -2)
 
@@ -34,12 +34,12 @@ InModuleScope RaspberryPi-PoSh {
             $SD.GetPartition(1) | Should Not Be $null
         }
 
-        It "Should be able to check alignment" -Skip:$Skip {
+        It "Should be able to check partition alignment" -Skip:$Skip {
             [Parted]::Aligncheck($SD, 'opt', 1) | Should Be $true
             [Parted]::Aligncheck($SD, 'opt', 2) | Should Be $true
         }
 
-        It "Should be able to set flag" -Skip:$Skip {
+        It "Should be able to set flags" -Skip:$Skip {
             [Parted]::Set($SD, 1, 'boot', 'on') | Should Not Throw [System.Exception]
         }
 

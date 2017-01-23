@@ -18,11 +18,11 @@ InModuleScope RaspberryPi-PoSh {
             [Losetup]::Lookup() | Should Match "^/dev/loop\d+$"
         }
 
-        It "Should be able to attach image to loopback device" -Skip:$Skip {
+        It "Should be able to attach disk images to loopback devices" -Skip:$Skip {
             {[Losetup]::Attach($SDDevicePath, $SDDeviceFilePath) } | Should Not Throw
         }
 
-        It "Should be able to detach image from loopback device" -Skip:$Skip {
+        It "Should be able to detach disk images from loopback devices" -Skip:$Skip {
             { [Losetup]::Detach($SDDevicePath) } | Should Not Throw
         }
     }

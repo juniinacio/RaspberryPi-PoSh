@@ -25,7 +25,7 @@ InModuleScope RaspberryPi-PoSh {
         }
 
         It "Should be able to install SD" -Skip:$Skip {
-            $mountpoint = Join-Path -Path $TestDrive -ChildPath "System"
+            $mountpoint = Join-Path -Path $TestDrive -ChildPath "Storage"
 
             $null = New-Item -Path $mountpoint -ItemType Directory
             

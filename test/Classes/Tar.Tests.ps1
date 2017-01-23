@@ -20,14 +20,14 @@ InModuleScope RaspberryPi-PoSh {
             Test-Path "$destination/.kodi/userdata/guisettings.xml" -PathType Leaf | Should Be $true
         }
 
-        It "Should be able to compress folder content" {
+        It "Should be able to compress folder contents" {
             [Tar]::Create($destination, "$TestDrive/backup.tar")
             Test-Path "$TestDrive/backup.tar" -PathType Leaf | Should Be $true
             [Tar]::TarInfo("$TestDrive/backup.tar") -contains './.kodi/userdata/' | Should Be $true
             [Tar]::TarInfo("$TestDrive/backup.tar") -contains './.kodi/addons/' | Should Be $true
         }
 
-        It "Should be able to compress folder content excluding files listed in excludes file" {
+        It "Should be able to compress folder contents excluding certain files listed in an exclude file" {
             [Tar]::Create($destination, "$TestDrive/backup.tar", (Join-Path -Path $PSScriptRoot -ChildPath 'assets/excludeFile.txt'))
             [Tar]::TarInfo("$TestDrive/backup.tar") -contains './.kodi/userdata/' | Should Be $false
             [Tar]::TarInfo("$TestDrive/backup.tar") -contains './.kodi/addons/' | Should Be $true
