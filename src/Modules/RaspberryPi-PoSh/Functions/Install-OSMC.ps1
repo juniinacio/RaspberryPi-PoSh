@@ -4,33 +4,33 @@
 .DESCRIPTION
     This cmdlet installs and restores OSMC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Using this cmdlet u will be able to do both a SD or USB install of OSMC.
     
-    The cmdlet supports the OSMC tar distribution image file format (OSMC_TGT_rbp2_20161128.sources.gz).
+    The cmdlet supports the OSMC tar distribution image file format (OSMC_TGT_rbp*_*.img.gz).
 
-    The cmdlet can do installs for all Raspberry Pi versions.
+    The cmdlet can install all Raspberry Pi versions.
 
     OSMC can be downloaded from one of the following locations:
     http://download.osmc.tv/
     http://download.osmc.tv/installers/diskimages/ (direct link)
 .EXAMPLE
-    PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.sources.gz'
+    PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz'
 
     This example shows how to do a typical install of OSMC.
 .EXAMPLE
-    PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -USBDevicePath '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.sources.gz' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2}
+    PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -USBDevicePath '/dev/sdc' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2}
 
     This example shows how to do an install to USB of OSMC.
 .EXAMPLE
-    PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.sources.gz' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2;gpu_mem=320}
+    PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2;gpu_mem=320}
 
     This example shows how to do a typical install of OSMC and specifying some custom settings.
 .EXAMPLE
-    PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.sources.gz' -RestoreFilePath '/home/ubuntu/Kodi/Backups/OSMC-20161223084639.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2}
+    PS /> Install-OSMC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -RestoreFilePath '/home/ubuntu/Kodi/Backups/OSMC-20161223084639.tar' -CustomSettings @{arm_freq=1000;core_freq=500;sdram_freq=500;over_voltage=2}
 
     This example shows how to do advanced install of OSMC, specifying some custom settings and also doing a restore from a previously taken backup using the Backup-Raspberry cmdlet.
 .EXAMPLE
     PS /> Install-OSMC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -RestoreFilePath '/home/ubuntu/Backups/OSMC-20161223084639.tar'
 
-    This example shows how to install OSMC using loopback devices. Notice that before executing the cmdlet we have manually attached a disk image to the loopback device /dev/loop0.
+    This example shows how to install OSMC using a loopback device. Notice that before executing the cmdlet, you will have to manually attach the disk image to the loopback device and afterwards execute the cmdlets indicating the loopback device you have attached the disk image. In this example we have attached the disk image to /dev/loop0.
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
 .PARAMETER FilePath

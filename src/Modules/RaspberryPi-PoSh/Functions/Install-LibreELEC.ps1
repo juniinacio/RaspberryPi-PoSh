@@ -4,9 +4,9 @@
 .DESCRIPTION
     This cmdlet installs and optionally restores LibreELEC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Use this cmdlet to install LibreELEC to SD or USB.
     
-    The cmdlet supports two of the three types of LibreELEC distribution image file formats. The first being the .tar (LibreELEC-RPi2.arm-<version>.tar) and the noobs archive format (LibreELEC-RPi2.arm-<version>-noobs.tar.
+    The cmdlet supports two of the three types of LibreELEC distribution image file formats. The first being the .tar (LibreELEC-RPi*.arm-*.tar) and the noobs archive format (LibreELEC-RPi*.arm-*-noobs.tar.
 
-    The cmdlet can do installs for all Raspberry Pi versions.
+    The cmdlet can install all Raspberry Pi versions.
 .EXAMPLE
     PS /> Install-LibreELEC -SDDevicePath '/dev/mmcblk0' -FilePath '/home/ubuntu/Downloads/LibreELEC-RPi2.arm-7.0.2.tar'
 
@@ -26,7 +26,7 @@
 .EXAMPLE
     PS /> Install-LibreELEC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/LibreELEC-RPi2.arm-7.0.2.tar'
 
-    This example shows how to install LibreELEC using loopback devices. Notice that before executing the cmdlet we have manually attached a disk image to the loopback device /dev/loop0.
+    This example shows how to install LibreELEC using a loopback device. Notice that before executing the cmdlet, you will have to manually attach the disk image to the loopback device and afterwards execute the cmdlets indicating the loopback device you have attached the disk image. In this example we have attached the disk image to /dev/loop0.
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
 .PARAMETER FilePath

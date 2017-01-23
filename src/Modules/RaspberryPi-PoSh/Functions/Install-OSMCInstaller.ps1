@@ -4,9 +4,9 @@
 .DESCRIPTION
     This cmdlet installs the OSMC installer the Raspberry Pi. Installing OSMC using this cmdlet has the same affect as using the Official OSMC installer.
     
-    The cmdlet supports the OSMC tar distribution image file format (OSMC_TGT_rbp2_20161128.img.gz).
+    The cmdlet supports the OSMC tar distribution image file format (OSMC_TGT_rbp*_*.img.gz).
 
-    The cmdlet can do installs for all Raspberry Pi versions.
+    The cmdlet can install all Raspberry Pi versions.
 
     OSMC can be downloaded from one of the following locations:
     http://download.osmc.tv/

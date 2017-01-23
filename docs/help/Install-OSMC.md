@@ -4,9 +4,9 @@ Installs and restores OSMC.
 ## Description
 This cmdlet installs and restores OSMC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Using this cmdlet u will be able to do both a SD or USB install of OSMC.
     
-The cmdlet supports the OSMC tar distribution image file format (OSMC_TGT_rbp2_20161128.sources.gz).
+The cmdlet supports the OSMC tar distribution image file format (OSMC_TGT_rbp*_*.img.gz).
 
-The cmdlet can do installs for all Raspberry Pi versions.
+The cmdlet can install all Raspberry Pi versions.
 
 OSMC can be downloaded from one of the following locations:
 http://download.osmc.tv/
@@ -66,4 +66,4 @@ This example shows how to do advanced install of OSMC, specifying some custom se
 ```powershell
 PS /> Install-OSMC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/OSMC_TGT_rbp2_20161128.img.gz' -RestoreFilePath '/home/ubuntu/Backups/OSMC-20161223084639.tar'
 ```
-This example shows how to install OSMC using loopback devices. Notice that before executing the cmdlet we have manually attached a disk image to the loopback device /dev/loop0.
+This example shows how to install OSMC using a loopback device. Notice that before executing the cmdlet, you will have to manually attach the disk image to the loopback device and afterwards execute the cmdlets indicating the loopback device you have attached the disk image. In this example we have attached the disk image to /dev/loop0.

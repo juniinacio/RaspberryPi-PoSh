@@ -4,9 +4,9 @@ Installs and restores OpenELEC.
 ## Description
 This cmdlet installs and optionally restores OpenELEC for the Raspberry Pi. This cmdlet also support setting custom settings into the config.txt file. Use this cmdlet to install OpenELEC to SD or USB.
     
-The cmdlet supports the OpenELEC tar distribution image file format (OpenELEC-RPi2.arm-<version>.tar).
+The cmdlet supports the OpenELEC tar distribution image file format (OpenELEC-RPi*.arm-*.tar).
 
-The cmdlet can do installs for all Raspberry Pi versions.
+The cmdlet can install all Raspberry Pi versions.
 
 ## Syntax
 ```powershell
@@ -62,4 +62,4 @@ This example shows how to do advanced install of OpenELEC, specifying some custo
 ```powershell
 PS /> Install-OpenELEC -SDDevicePath '/dev/loop0' -FilePath '/home/ubuntu/Downloads/OpenELEC-RPi2.arm-6.0.3.tar'
 ```
-This example shows how to install OpenELEC using loopback devices. Notice that before executing the cmdlet we have manually attached a disk image to the loopback device /dev/loop0.
+This example shows how to install OpenELEC using a loopback device. Notice that before executing the cmdlet, you will have to manually attach the disk image to the loopback device and afterwards execute the cmdlets indicating the loopback device you have attached the disk image. In this example we have attached the disk image to /dev/loop0.

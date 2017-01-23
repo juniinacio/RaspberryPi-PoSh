@@ -3,7 +3,7 @@
     Creates a backup of the Kodi installation on the Raspberry Pi.
 .DESCRIPTION
     This cmdlet Creates a backup of the Kodi installation on the Raspberry Pi. Use this cmdlet together with the Install-LibreELEC, Install-OpenELEC or Install-OSMC cmdlets to
-    restore your Raspberry Pi in case of an emergency or new install.
+    install or restore your Raspberry Pi.
 .EXAMPLE
     PS /> Backup-Raspberry -SD '/dev/mmcblk0'
 
