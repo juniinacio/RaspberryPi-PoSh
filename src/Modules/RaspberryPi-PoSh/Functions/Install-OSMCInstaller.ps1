@@ -93,9 +93,7 @@ function Install-OSMCInstaller {
     )
     
     begin {
-
         try {
-
             $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
             if ($SDDevice -eq $null) {
                 throw "Cannot find device '$SDDevicePath' because it does not exist."
@@ -125,7 +123,6 @@ function Install-OSMCInstaller {
             if ($SDDevice.GetPartition(0).Umount()) {
                 [Utility]::Umount($SDDevice.GetPartition(0))
             }
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -133,11 +130,9 @@ function Install-OSMCInstaller {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # begin
     
     process {
-
         try {
             
             $source = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
@@ -209,7 +204,6 @@ function Install-OSMCInstaller {
             Remove-Item -Path $source -Recurse -Force
             Remove-Item -Path $build -Recurse -Force
             Remove-Item -Path $destination -Recurse -Force
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -217,13 +211,10 @@ function Install-OSMCInstaller {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # process
     
     end {
-
         try {
-
             $destination = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
             if (Test-Path -Path $destination -PathType Container) {
                 Remove-Item -Path $destination -Recurse
@@ -274,7 +265,6 @@ function Install-OSMCInstaller {
             }
 
             Remove-Item -Path $destination -Recurse -Force
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -282,6 +272,5 @@ function Install-OSMCInstaller {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # end
 }

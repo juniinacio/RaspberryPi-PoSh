@@ -54,9 +54,7 @@ function Install-Plugin {
     )
 
     begin {
-
         try {
-
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
                 $devicePath = $SDDevicePath
                 $index = 1
@@ -101,7 +99,6 @@ function Install-Plugin {
             Remove-Item -Path $destination -Recurse -Force
 
             $plugins = [System.Collections.ArrayList]::New()
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -113,9 +110,7 @@ function Install-Plugin {
     } # begin
 
     process {
-
         try {
-
             foreach ($path in $FilePath) {
                 try {
                     # if (
@@ -134,7 +129,6 @@ function Install-Plugin {
                     $PSCmdlet.WriteError($_)
                 } # try
             } # foreach ($path in $FilePath) {
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -142,13 +136,10 @@ function Install-Plugin {
             
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # process
 
     end {
-
         try {
-
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
                 $devicePath = $SDDevicePath
                 $index = 1
@@ -199,7 +190,6 @@ function Install-Plugin {
             }
 
             Remove-Item -Path $destination -Recurse -Force
-
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
@@ -207,6 +197,5 @@ function Install-Plugin {
 
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
-
     } # end
 }

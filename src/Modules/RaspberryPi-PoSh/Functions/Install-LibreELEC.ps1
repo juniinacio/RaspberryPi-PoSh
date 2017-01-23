@@ -30,7 +30,7 @@
 .PARAMETER SDDevicePath
     Path to the SD device, e.g. /dev/mmcblk0.
 .PARAMETER FilePath
-    Path to the LibreELEC image file. Please keep the original name as the cmdlet depends on it.
+    Path to the LibreELEC image file.
 .PARAMETER CustomSettings
     Hashtable containing custom settings, these settings will be set as settings in the config.txt file.
 .PARAMETER RestoreFilePath
@@ -176,9 +176,7 @@ function Install-LibreELEC {
     } # begin
     
     process {
-
         try {
-
             $source = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
             if (Test-Path -Path $source -PathType Container) {
                 Remove-Item -Path $source -Recurse
@@ -205,15 +203,13 @@ function Install-LibreELEC {
 
             $file = Get-Item -Path $FilePath
 
-            if ($file.Name -like '*noobs*') {
-                [Tar]::Extract($file.FullName, $source)
+            [Tar]::Extract($file.FullName, $source)
 
+            if ((Get-ChildItem -Path $source -Recurse | Where-Object {$_.Name -imatch 'System\.tar\.xz$'} | Measure-Object).Count -gt 0) {
                 $file = Get-ChildItem -Path $source -Recurse | Where-Object {$_.Name -imatch 'System\.tar\.xz$'} | Select-Object -First 1
 
                 [Tar]::Extract($file.FullName, $destination)
             } else {
-                [Tar]::Extract($file.FullName, $source)
-
                 $source2 = Join-Path -Path $source -ChildPath $file.BaseName
 
                 Copy-Item -Path "$source2/target/KERNEL"            -Destination "$destination/kernel.img"
