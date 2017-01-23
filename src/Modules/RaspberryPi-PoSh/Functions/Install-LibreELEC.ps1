@@ -104,6 +104,8 @@ function Install-LibreELEC {
 
             [Utility]::Umount($SDDevice)
 
+            [Utility]::DD('/dev/zero', $SDDevice, 512, 1)
+
             [Parted]::MKLabel($SDDevice, 'msdos')
 
             [Parted]::MKPart($SDDevice, 'primary', 'cyl', 'fat32', 0, 65)
@@ -131,6 +133,8 @@ function Install-LibreELEC {
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
                 [Mkfs]::Ext4($SDDevice.GetPartition(1), 'STORAGE')
             } else {
+                [Utility]::DD('/dev/zero', $USBDevice, 512, 1)
+
                 [Parted]::MKLabel($USBDevice, 'msdos')
 
                 [Parted]::MKPart($USBDevice, 'primary', 'cyl', 'ext2', 0, -2)

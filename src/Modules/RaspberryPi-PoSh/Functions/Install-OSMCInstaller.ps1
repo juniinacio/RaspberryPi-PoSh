@@ -102,6 +102,8 @@ function Install-OSMCInstaller {
 
             [Utility]::Umount($SDDevice)
 
+            [Utility]::DD('/dev/zero', $SDDevice, 512, 1)
+
             [Parted]::MKLabel($SDDevice, 'msdos')
 
             [Parted]::MKPart($SDDevice, 'primary', 'cyl', 'fat32', 0, 65)
