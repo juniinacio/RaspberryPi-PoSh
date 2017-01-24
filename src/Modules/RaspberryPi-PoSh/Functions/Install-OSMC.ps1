@@ -358,22 +358,22 @@ function Install-OSMC {
 
             if ($file.Name -like '*rbp2*') {
                 Set-Content -Path "$destination/config.txt" -Force -Value @'
- gpu_mem_1024=256
- hdmi_ignore_cec_init=1
- disable_overscan=1
- start_x=1
- disable_splash=1
+  gpu_mem_1024=256
+  hdmi_ignore_cec_init=1
+  disable_overscan=1
+  start_x=1
+  disable_splash=1
 '@
             } else {
                 Set-Content -Path "$destination/config.txt" -Force -Value @'
- arm_freq=850
- core_freq=375
- gpu_mem_256=112
- gpu_mem_512=144
- hdmi_ignore_cec_init=1
- disable_overscan=1
- start_x=1
- disable_splash=1
+  arm_freq=850
+  core_freq=375
+  gpu_mem_256=112
+  gpu_mem_512=144
+  hdmi_ignore_cec_init=1
+  disable_overscan=1
+  start_x=1
+  disable_splash=1
 '@
             }
             
