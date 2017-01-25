@@ -1,40 +1,34 @@
-![logo][] RaspberryPi-PoSh
-====================
+# ![logo][] RaspberryPi-PoSh #
 
 [logo]: assets/Raspberry_Pi_64.png
 
 Welcome to the PowerShell v6 module for provisioning Kodi on the Raspberry Pi.
 
-About
------
+### About ###
 RaspberryPi-PoSh is a PowerShell v6 module for provisioning Kodi onto the Raspberry Pi under Linux-, macOS- based systems.
 
 The reason I created this module is that I wanted to easily backup my Raspberry Pi, install/re-install it or in case of corruption, do a full restore. I also wanted the possibility to update the device for family and friends.
 
 I sucked with bash, so when Microsoft released PowerShell for Linux, I saw the opportunity to rewrite my poor bash scripts to PowerShell.
 
-Prerequisites
--------------
+### Prerequisites ###
 In order to use this module you need to have PowerShell installed on your system, which you can download [here][download-powershell].
 
 [download-powershell]: https://github.com/PowerShell/PowerShell
 
 *Notice: This module has been tested under Ubuntu 14.01, Ubuntu 16.04 and CentOS 7 only (feel free to test under macOS).*
 
-New to PowerShell?
-------------------
+### New to PowerShell? ###
 If you are new to PowerShell and would like to learn more, I recommend reviewing the [getting started][getting-started] documentation.
 
 [getting-started]: https://github.com/PowerShell/PowerShell/tree/master/docs/learning-powershell
 
-Cmdlets included
-----------------
+### Cmdlets included ###
 Navigate [here][get-help] for an overview of all cmdlets and their parameters, off course every cmdlets has built-in help integrated, feel free to use get-help.
 
 [get-help]: docs/help/README.md
 
-Installation
-------------
+### Installation ###
 1. Download or clone this repository on your desktop.
 2. Copy the directory src/Modules/RaspberryPi-PoSh to one of the following directories:
   * /home/ubuntu/.local/share/powershell/Modules
@@ -52,9 +46,7 @@ Alternatively you can use the [install.ps1][install-ps1] contained in the root o
 
 [install-ps1]: install.ps1
 
-Getting started
----------------
-
+### Getting started ###
 To use the module you first need to import it in your current PowerShell session:
 ```powershell
 Import-Module -Name RaspberryPi-PoSh
