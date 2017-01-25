@@ -94,34 +94,34 @@ function Install-OSMCInstaller {
     
     begin {
         try {
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            if ($SDDevice -eq $null) {
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
+            if ($SD -eq $null) {
                 throw "Cannot find device '$SDDevicePath' because it does not exist."
             }
 
-            [Utility]::Umount($SDDevice)
+            [Utility]::Umount($SD)
 
-            [Utility]::DD('/dev/zero', $SDDevice, 512, 1)
+            [Utility]::DD('/dev/zero', $SD, 512, 1)
 
-            [Parted]::MKLabel($SDDevice, 'msdos')
+            [Parted]::MKLabel($SD, 'msdos')
 
-            [Parted]::MKPart($SDDevice, 'primary', 'cyl', 'fat32', 0, 65)
+            [Parted]::MKPart($SD, 'primary', 'cyl', 'fat32', 0, 65)
 
-            if (-not ([Parted]::Aligncheck($SDDevice, 'opt', 1))) {
-                Write-Error "Device '$($SDDevice.GetPartition(0))' is not aligned."
+            if (-not ([Parted]::Aligncheck($SD, 'opt', 1))) {
+                Write-Error "Device '$($SD.GetPartition(0))' is not aligned."
             }
 
-            [Parted]::Set($SDDevice, 1, 'boot', 'on')
+            [Parted]::Set($SD, 1, 'boot', 'on')
 
-            [Partprobe]::Probe($SDDevice)
+            [Partprobe]::Probe($SD)
  
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
 
-            [Mkfs]::VFat($SDDevice.GetPartition(0), 'SYSTEM', 32)
+            [Mkfs]::VFat($SD.GetPartition(0), 'SYSTEM', 32)
 
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            if ($SDDevice.GetPartition(0).Umount()) {
-                [Utility]::Umount($SDDevice.GetPartition(0))
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
+            if ($SD.GetPartition(0).Umount()) {
+                [Utility]::Umount($SD.GetPartition(0))
             }
         } catch {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
@@ -176,14 +176,14 @@ function Install-OSMCInstaller {
 
             [Utility]::Mount($loop.GetPartition(0), $source)
 
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            if ($SDDevice.GetPartition(0).Umount()) {
-                [Utility]::Umount($SDDevice.GetPartition(0))
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
+            if ($SD.GetPartition(0).Umount()) {
+                [Utility]::Umount($SD.GetPartition(0))
             }
 
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
 
-            [Utility]::Mount($SDDevice.GetPartition(0), $destination)
+            [Utility]::Mount($SD.GetPartition(0), $destination)
 
             Copy-Item -Path "$source/*" -Destination "$destination/" -Recurse
 
@@ -196,9 +196,9 @@ function Install-OSMCInstaller {
 
             [Losetup]::Detach($loop)
 
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            if ($SDDevice.GetPartition(0).Umount()) {
-                [Utility]::Umount($SDDevice.GetPartition(0))
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
+            if ($SD.GetPartition(0).Umount()) {
+                [Utility]::Umount($SD.GetPartition(0))
             }
 
             Remove-Item -Path $source -Recurse -Force
@@ -222,12 +222,12 @@ function Install-OSMCInstaller {
 
             New-Item -Path $destination -ItemType Directory | Out-Null
 
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            if ($SDDevice.GetPartition(0).Umount()) {
-                [Utility]::Umount($SDDevice.GetPartition(0))
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
+            if ($SD.GetPartition(0).Umount()) {
+                [Utility]::Umount($SD.GetPartition(0))
             }
 
-            [Utility]::Mount($SDDevice.GetPartition(0), $destination)
+            [Utility]::Mount($SD.GetPartition(0), $destination)
 
             $preseedFile = [PreseedFile]::New($destination)
 
@@ -259,9 +259,9 @@ function Install-OSMCInstaller {
 
             [Utility]::Sync()
 
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            if ($SDDevice.GetPartition(0).Umount()) {
-                [Utility]::Umount($SDDevice.GetPartition(0))
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
+            if ($SD.GetPartition(0).Umount()) {
+                [Utility]::Umount($SD.GetPartition(0))
             }
 
             Remove-Item -Path $destination -Recurse -Force

@@ -93,81 +93,81 @@ function Install-OSMC {
     
     begin {
         try {
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            if ($SDDevice -eq $null) {
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
+            if ($SD -eq $null) {
                 throw "Cannot find device '$SDDevicePath' because it does not exist."
             }
 
             if ($PSCmdlet.ParameterSetName -eq 'USB') {
-                $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
-                if ($USBDevice -eq $null) {
+                $USB = [DeviceService]::GetDevice($USBDevicePath)
+                if ($USB -eq $null) {
                     throw "Cannot find device '$USBDevicePath' because it does not exist."
                 }
 
-                [Utility]::Umount($USBDevice)
+                [Utility]::Umount($USB)
             }
 
-            [Utility]::Umount($SDDevice)
+            [Utility]::Umount($SD)
 
-            [Utility]::DD('/dev/zero', $SDDevice, 512, 1)
+            [Utility]::DD('/dev/zero', $SD, 512, 1)
 
-            [Parted]::MKLabel($SDDevice, 'msdos')
+            [Parted]::MKLabel($SD, 'msdos')
 
-            [Parted]::MKPart($SDDevice, 'primary', 'cyl', 'fat32', 0, 65)
+            [Parted]::MKPart($SD, 'primary', 'cyl', 'fat32', 0, 65)
 
-            if (-not ([Parted]::Aligncheck($SDDevice, 'opt', 1))) {
-                Write-Error "Device '$($SDDevice.GetPartition(0))' is not aligned."
+            if (-not ([Parted]::Aligncheck($SD, 'opt', 1))) {
+                Write-Error "Device '$($SD.GetPartition(0))' is not aligned."
             }
 
-            [Parted]::Set($SDDevice, 1, 'boot', 'on')
+            [Parted]::Set($SD, 1, 'boot', 'on')
 
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
-                [Parted]::MKPart($SDDevice, 'primary', 'cyl', 'ext2', 65, -2)
+                [Parted]::MKPart($SD, 'primary', 'cyl', 'ext2', 65, -2)
 
-                if (-not ([Parted]::AlignCheck($SDDevice, 'opt', 2))) {
-                    Write-Error "Device '$($SDDevice.GetPartition(1))' is not aligned."
+                if (-not ([Parted]::AlignCheck($SD, 'opt', 2))) {
+                    Write-Error "Device '$($SD.GetPartition(1))' is not aligned."
                 }
             }
 
-            [Partprobe]::Probe($SDDevice)
+            [Partprobe]::Probe($SD)
  
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
 
-            [Mkfs]::VFat($SDDevice.GetPartition(0), 'SYSTEM', 32)
-
-            if ($PSCmdlet.ParameterSetName -eq 'SD') {
-                [Mkfs]::Ext4($SDDevice.GetPartition(1), 'STORAGE')
-            } else {
-                [Utility]::DD('/dev/zero', $USBDevice, 512, 1)
-
-                [Parted]::MKLabel($USBDevice, 'msdos')
-
-                [Parted]::MKPart($USBDevice, 'primary', 'cyl', 'ext2', 0, -2)
-
-                if (-not ([Parted]::Aligncheck($USBDevice, 'opt', 1))) {
-                    Write-Error "Device '$($USBDevice.GetPartition(0))' is not aligned."
-                }
-
-                [Partprobe]::Probe($USBDevice)
-
-                $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
-
-                [Mkfs]::Ext4($USBDevice.GetPartition(0), 'STORAGE')
-            }
-
-            $SDDevice = [DeviceService]::GetDevice($SDDevicePath)
-            if ($SDDevice.GetPartition(0).Umount()) {
-                [Utility]::Umount($SDDevice.GetPartition(0))
-            }
+            [Mkfs]::VFat($SD.GetPartition(0), 'SYSTEM', 32)
 
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
-                if ($SDDevice.GetPartition(1).Umount()) {
-                    [Utility]::Umount($SDDevice.GetPartition(1))
+                [Mkfs]::Ext4($SD.GetPartition(1), 'STORAGE')
+            } else {
+                [Utility]::DD('/dev/zero', $USB, 512, 1)
+
+                [Parted]::MKLabel($USB, 'msdos')
+
+                [Parted]::MKPart($USB, 'primary', 'cyl', 'ext2', 0, -2)
+
+                if (-not ([Parted]::Aligncheck($USB, 'opt', 1))) {
+                    Write-Error "Device '$($USB.GetPartition(0))' is not aligned."
+                }
+
+                [Partprobe]::Probe($USB)
+
+                $USB = [DeviceService]::GetDevice($USBDevicePath)
+
+                [Mkfs]::Ext4($USB.GetPartition(0), 'STORAGE')
+            }
+
+            $SD = [DeviceService]::GetDevice($SDDevicePath)
+            if ($SD.GetPartition(0).Umount()) {
+                [Utility]::Umount($SD.GetPartition(0))
+            }
+
+            if ($PSCmdlet.ParameterSetName -eq 'SD') {
+                if ($SD.GetPartition(1).Umount()) {
+                    [Utility]::Umount($SD.GetPartition(1))
                 }
             } else {
-                $USBDevice = [DeviceService]::GetDevice($USBDevicePath)
-                if ($USBDevice.GetPartition(0).Umount()) {
-                    [Utility]::Umount($USBDevice.GetPartition(0))
+                $USB = [DeviceService]::GetDevice($USBDevicePath)
+                if ($USB.GetPartition(0).Umount()) {
+                    [Utility]::Umount($USB.GetPartition(0))
                 }
             }
         } catch {
