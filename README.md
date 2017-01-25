@@ -56,4 +56,7 @@ To view all cmdlets, enter:
 Get-Command -Module RaspberryPi-PoSh
 ```
 
+### Creating disk images ###
+See this [wiki page](https://github.com/juniinacio/RaspberryPi-PoSh/wiki/Working-with-images) for more information on how to use classes available in this module to create disk images for your Raspberry Pi.
+
 *Notice: Start PowerShell as root when using the module.*
