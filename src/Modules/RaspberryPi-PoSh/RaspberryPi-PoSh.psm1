@@ -199,7 +199,7 @@ class Utility {
         return $output.Trim()
     }
 
-    static [void] DD([string] $If, [string]$Of, [long] $Bs, [long] $Count) {
+    static [void] DD ([string] $If, [string]$Of, [long] $Bs, [long] $Count) {
         ExecCmd -Command 'dd' -ArgumentsList "if=$If", "of=$Of", "bs=$Bs", "count=$Count", 'status=none'
     }
 }
@@ -306,7 +306,7 @@ class Tar {
 }
 
 class Md5sum {
-    static [void] Check([string] $Path) {
+    static [void] Check ([string] $Path) {
         try {
             $parent = Split-Path -Path $Path -Parent
 
@@ -395,9 +395,8 @@ class Unzip {
 # https://github.com/osmc/osmc/blob/master/installer/host/qt_host_installer/preseeder.cpp
 
 class PreseedFile {
-    [System.Collections.ArrayList] $Content
-
-    [string] $Path
+    hidden [System.Collections.ArrayList] $Content
+    hidden [string] $Path
 
     PreseedFile ([string] $Path) {
         if (-not (Test-Path -Path $Path -PathType Container)) {
@@ -548,5 +547,5 @@ foreach ($p in $Paths) {
 }
 
 if (-not (IsElevated)) {
-    Write-Warning 'Need to be root for using cmdlets this module!'
+    Write-Warning 'Need to be root for using cmdlets in this module!'
 }
