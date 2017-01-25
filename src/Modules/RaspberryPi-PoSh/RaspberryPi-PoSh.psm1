@@ -512,37 +512,27 @@ class ConfigFile {
 function ExecCmd {
     [CmdletBinding()]
     Param (
-        # Param1 help description
-        [Parameter(Mandatory = $true, Position = 0)]
+        # Specifies the name of the shell command to execute.
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [Alias('Cmd')]
         [string]
         $Command,
         
-        # Param2 help description
-        [Parameter(Mandatory = $false, Position = 1)]
+        # Specifies parameters or parameter values to use when this cmdlet executes the command.
+        [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        [String[]]
-        $ArgumentsList,
-
-        # Param3 help description
-        [Parameter(Mandatory = $false, Position = 2)]
-        [Switch]
-        $UseSudo
+        [string[]]
+        $ArgumentsList
     )
     
-    $sudocmd = $global:sudocmd
-
-    if ($UseSudo.IsPresent) {
-        [Logger]::LogMessage("Running: $sudocmd $Command $ArgumentsList", [EventSeverity]::Verbose)
-        $output = & $sudocmd $Command @ArgumentsList
-    } else {
-        [Logger]::LogMessage("Running: $Command $ArgumentsList", [EventSeverity]::Verbose)
-        $output = & $Command @ArgumentsList
-    }
+    [Logger]::LogMessage("Running: $Command $ArgumentsList", [EventSeverity]::Verbose)
+    
+    $output = & $Command @ArgumentsList 2>&1
 
     if ($LastExitCode -ne 0) {
-        throw $output
+        $e = New-Object System.InvalidOperationException -ArgumentList $output.Exception.Message
+        throw $e
     } else {
         [Logger]::LogMessage("LastExitCode: $LastExitCode", [EventSeverity]::Verbose)
     }
