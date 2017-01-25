@@ -520,6 +520,17 @@ function ExecCmd {
     $output
 }
 
+function IsElevated
+{
+    $IsElevated = $false
+    if (-not $IsWindows) {
+        if ((whoami) -match 'root') {
+            $IsElevated = $true
+        }
+    }
+    return $IsElevated
+}
+
 #----------------------------------------------------------------------------------------------------------------------
 # Dot source any related scripts and functions in the same directory as this module
 
@@ -534,4 +545,8 @@ foreach ($p in $Paths) {
             . $_.ProviderPath 
         }
     }
+}
+
+if (-not (IsElevated)) {
+    Write-Warning 'Need to be root for using cmdlets this module!'
 }
