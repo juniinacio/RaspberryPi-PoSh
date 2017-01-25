@@ -1,5 +1,3 @@
-$global:sudocmd = 'sudo'
-
 #----------------------------------------------------------------------------------------------------------------------
 # Environment variables
 if (-not (Test-Path -Path '/etc/os-release' -PathType Leaf)) {
@@ -52,9 +50,7 @@ class Device {
     [string] $Type
     [string] $Label
     [string] $Hotplug
-    
     [System.Collections.ArrayList] $Partitions
-    
     [Device] $Parent
 
     Device ([string] $Name, [string] $FSType, [string] $Size, [string] $Mountpoint, [string] $Type, [string] $Label, [string] $Hotplug) {
@@ -65,9 +61,7 @@ class Device {
         $this.Type = $Type
         $this.Label = $Label
         $this.Hotplug = $Hotplug
-        
         $this.Parent = $null
-        
         $this.Partitions = [System.Collections.ArrayList]::New()
     }
 
@@ -109,7 +103,6 @@ class Device {
 }
 
 class DeviceService {
-
     static [System.Collections.ArrayList] GetDevices ([bool] $Force = $false) {
         $arrayList = [System.Collections.ArrayList]::New()
         
@@ -154,7 +147,6 @@ class DeviceService {
 }
 
 class Utility {
-
     static [void] Umount ([Device] $Device) {
         if ($Device.Type -eq 'disk') {
             foreach ($p in $Device.GetPartitions()) {
@@ -213,7 +205,6 @@ class Utility {
 }
 
 class Parted {
-
     static [void] MKLabel ([Device] $Device, [string] $Label) {
         ExecCmd -Command 'parted' -ArgumentsList '-s', $Device.GetPath(), 'mklabel', $Label
     }
@@ -234,7 +225,6 @@ class Parted {
 }
 
 class Partprobe {
-    
     static [void] Probe ([Device] $Device) {
         if ($Device.Type -eq 'part') {
             ExecCmd -Command 'partprobe' -ArgumentsList $Device.Parent.GetPath()
@@ -245,7 +235,6 @@ class Partprobe {
 }
 
 class Mkfs {
-
     static [void] VFat ([Device] $Device, [string] $Label, [Uint32] $Size) {
         ExecCmd -Command 'mkfs.vfat' -ArgumentsList $Device.GetPath(), '-I', '-n', $Label, '-F', $Size
     }
@@ -257,7 +246,6 @@ class Mkfs {
 }
 
 class Tar {
-
     static [void] Extract ([string] $FilePath, [string] $Destination) {
         if (-not (Test-Path -Path $FilePath -PathType Leaf)) {
             throw "Cannot find path '$FilePath' because it does not exist."
@@ -339,7 +327,6 @@ class Md5sum {
 }
 
 class Gzip {
-
     static [void] Extract ([string] $FilePath) {
         if (-not (Test-Path -Path $FilePath -PathType Leaf)) {
             throw "Cannot find path '$FilePath' because it does not exist."
@@ -350,7 +337,6 @@ class Gzip {
 }
 
 class Losetup {
-
     static [string] Lookup () {
         $output = ExecCmd -Command 'losetup' -ArgumentsList '-f'
 
@@ -371,21 +357,18 @@ class Losetup {
 }
 
 # class dmsetup {
-
 #     static [void] RemoveAll () {
 #         ExecCmd -Command 'dmsetup' -ArgumentsList 'remove_all' -UseSudo
 #     }
 # }
 
 # class kpartx {
-
 #     static [void] AddPartitionDevMappings ([string] $DevicePath) {
 #         ExecCmd -Command 'kpartx' -ArgumentsList '-a', $DevicePath -UseSudo
 #     }
 # }
 
 class Unzip {
-
     static [void] Extract ([string] $FilePath, [string] $Destination) {
         if (-not (Test-Path -Path $FilePath -PathType Leaf)) {
             throw "Cannot find path '$FilePath' because it does not exist."
@@ -412,7 +395,6 @@ class Unzip {
 # https://github.com/osmc/osmc/blob/master/installer/host/qt_host_installer/preseeder.cpp
 
 class PreseedFile {
-
     [System.Collections.ArrayList] $Content
 
     [string] $Path
@@ -456,10 +438,8 @@ class PreseedFile {
 }
 
 class ConfigFile {
-
-    [System.Collections.ArrayList] $Content
-
-    [string] $Path
+    hidden [System.Collections.ArrayList] $Content
+    hidden [string] $Path
 
     ConfigFile ([string] $Path) {
         if (-not (Test-Path -Path $Path -PathType Container)) {
