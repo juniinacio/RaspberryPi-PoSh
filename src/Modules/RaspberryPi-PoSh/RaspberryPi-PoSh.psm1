@@ -190,14 +190,6 @@ class Utility {
 
         return $output.Trim()
     }
-
-    static [string] Which ([string] $Command) {
-        $output = [string]::Empty
-
-        $output = ExecCmd -Command 'which' -ArgumentsList $Command
-
-        return $output.Trim()
-    }
 }
 
 Class DD {
