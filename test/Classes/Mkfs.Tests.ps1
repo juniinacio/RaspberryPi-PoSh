@@ -15,7 +15,7 @@ InModuleScope RaspberryPi-PoSh {
 
             [Losetup]::Attach($SDDevicePath, $SDDeviceFilePath)
 
-            [Utility]::DD('/dev/zero', $SDDevicePath, 512, 1)
+            [DD]::Copy('/dev/zero', $SDDevicePath, 512, 1)
 
             $SD = [DeviceService]::GetDevice($SDDevicePath)
 

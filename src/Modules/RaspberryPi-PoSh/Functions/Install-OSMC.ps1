@@ -109,7 +109,7 @@ function Install-OSMC {
 
             [Utility]::Umount($SD)
 
-            [Utility]::DD('/dev/zero', $SD, 512, 1)
+            [DD]::Copy('/dev/zero', $SD, 512, 1)
 
             [Parted]::MKLabel($SD, 'msdos')
 
@@ -138,7 +138,7 @@ function Install-OSMC {
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
                 [Mkfs]::Ext4($SD.GetPartition(1), 'STORAGE')
             } else {
-                [Utility]::DD('/dev/zero', $USB, 512, 1)
+                [DD]::Copy('/dev/zero', $USB, 512, 1)
 
                 [Parted]::MKLabel($USB, 'msdos')
 

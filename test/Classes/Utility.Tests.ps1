@@ -15,7 +15,7 @@ InModuleScope RaspberryPi-PoSh {
 
             [Losetup]::Attach($SDDevicePath, $SDDeviceFilePath)
 
-            [Utility]::DD('/dev/zero', $SDDevicePath, 512, 1)
+            [DD]::Copy('/dev/zero', $SDDevicePath, 512, 1)
 
             $SD = [DeviceService]::GetDevice($SDDevicePath)
 
@@ -58,7 +58,7 @@ InModuleScope RaspberryPi-PoSh {
 
         It "Should be able to create disk images" {
             $file = Join-Path -Path $TestDrive -ChildPath 'test.img'
-            [Utility]::DD('/dev/zero', $file, 1048576, $(400mb/1048576))
+            [DD]::Copy('/dev/zero', $file, 1048576, $(400mb/1048576))
             $file = Get-Item -Path $file
             $file.Length | Should Be 400mb
         }

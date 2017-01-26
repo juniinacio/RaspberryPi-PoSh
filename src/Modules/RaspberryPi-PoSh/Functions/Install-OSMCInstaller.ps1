@@ -101,7 +101,7 @@ function Install-OSMCInstaller {
 
             [Utility]::Umount($SD)
 
-            [Utility]::DD('/dev/zero', $SD, 512, 1)
+            [DD]::Copy('/dev/zero', $SD, 512, 1)
 
             [Parted]::MKLabel($SD, 'msdos')
 

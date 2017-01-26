@@ -198,8 +198,14 @@ class Utility {
 
         return $output.Trim()
     }
+}
 
-    static [void] DD ([string] $If, [string]$Of, [long] $Bs, [long] $Count) {
+Class DD {
+    static [void] Copy ([string] $If, [string]$Of, [long] $Bs) {
+        ExecCmd -Command 'dd' -ArgumentsList "if=$If", "of=$Of", "bs=$Bs", 'status=none'
+    }
+
+    static [void] Copy ([string] $If, [string]$Of, [long] $Bs, [long] $Count) {
         ExecCmd -Command 'dd' -ArgumentsList "if=$If", "of=$Of", "bs=$Bs", "count=$Count", 'status=none'
     }
 }
