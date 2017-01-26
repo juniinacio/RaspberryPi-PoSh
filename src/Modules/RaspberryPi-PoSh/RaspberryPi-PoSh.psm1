@@ -104,7 +104,7 @@ class Device {
 
 class DeviceService {
     static [System.Collections.ArrayList] GetDevices ([bool] $Force = $false) {
-        $arrayList = [System.Collections.ArrayList]::New()
+        $devices = [System.Collections.ArrayList]::New()
         
         if (($env:DISTRO_NAME -eq 'Ubuntu' -and $env:DISTRO_VERSION_ID -like '14*') -or ($env:DISTRO_NAME -like 'CentOS*' -and $env:DISTRO_VERSION_ID -like '7')) {
             $output = ExecCmd -Command 'lsblk' -ArgumentsList '-a', '-P', '-b', '-o', 'name,fstype,size,mountpoint,type,label,rm'
@@ -114,31 +114,28 @@ class DeviceService {
         
         [Logger]::LogMessage($output, [EventSeverity]::Debug)
 
-        $hashtables = $output.Split("`n") | ForEach-Object {(($_ -replace '(?<=")\s', "`n") -replace '"', '') -replace 'rm=', 'hotplug=' | Out-String | ConvertFrom-StringData}
+        $hashes = $output.Split("`n") | ForEach-Object {(($_ -replace '(?<=")\s', "`n") -replace '"', '') -replace 'rm=', 'hotplug=' | Out-String | ConvertFrom-StringData}
 
-        $devices = $hashtables | Where-Object {$_.name -match "\A((?=[^0-9]+\z)|(?=(mmcblk|loop)\d\z))"}
-
-        foreach ($dev in $devices) {
-            if (($dev.hotplug -eq 0) -and ($Force -eq $false) -and ($dev.name -notmatch 'loop\d\z')) {
+        $blockdevices = $hashes | Where-Object {$_.name -match "\A((?=[^0-9]+\z)|(?=(mmcblk|loop)\d\z))"}
+        foreach ($blockdevice in $blockdevices) {
+            if (($blockdevice.hotplug -eq 0) -and ($Force -eq $false) -and ($blockdevice.name -notmatch 'loop\d\z')) {
                 continue;
             }
 
-            $device = [Device]::new($dev.name, $dev.fstype, $dev.size, $dev.mountpoint, $dev.type, $dev.label, $dev.hotplug)
+            $device = [Device]::new($blockdevice.name, $blockdevice.fstype, $blockdevice.size, $blockdevice.mountpoint, $blockdevice.type, $blockdevice.label, $blockdevice.hotplug)
 
-            $partitions = $hashtables | Where-Object {$_.name -match ("\A{0}p?\d\z" -f $dev.name)}
+            $childrens = $hashes | Where-Object {$_.name -match ("\A{0}p?\d\z" -f $blockdevice.name)}
+            foreach ($children in $childrens) {
+                $part = [Device]::new($children.name, $children.fstype, $children.size, $children.mountpoint, $children.type, $children.label, $children.hotplug)
+                $part.SetParent($device)
 
-            foreach ($part in $partitions) {
-                $partition = [Device]::new($part.name, $part.fstype, $part.size, $part.mountpoint, $part.type, $part.label, $part.hotplug)
-                
-                $partition.SetParent($device)
-                
-                $device.SetPartition($partition)
+                $device.SetPartition($part)
             }
 
-            $arrayList.Add($device)
+            $devices.Add($device)
         }
 
-        return $arrayList
+        return $devices
     }
 
     static [Device] GetDevice ([string] $Path) {
