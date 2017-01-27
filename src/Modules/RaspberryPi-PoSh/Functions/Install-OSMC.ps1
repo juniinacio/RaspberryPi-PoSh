@@ -344,15 +344,15 @@ function Install-OSMC {
             $file = Get-Item -Path $FilePath
             if ($file.Name -like '*rbp2*') {
                 if ($PSCmdlet.ParameterSetName -eq 'SD') {
-                    "root=/dev/mmcblk0p2 rootfstype=ext4 rootwait quiet osmcdev=rbp2" | Set-Content -Path "$destination/cmdline.txt" -Force
+                    "root=LABEL=STORAGE rootfstype=ext4 rootwait quiet osmcdev=rbp2" | Set-Content -Path "$destination/cmdline.txt" -Force
                 } else {
-                    "root=/dev/sda1 rootfstype=ext4 rootwait quiet osmcdev=rbp2" | Set-Content -Path "$destination/cmdline.txt" -Force
+                    "root=LABEL=STORAGE rootfstype=ext4 rootwait quiet osmcdev=rbp2" | Set-Content -Path "$destination/cmdline.txt" -Force
                 }
             } else {
                 if ($PSCmdlet.ParameterSetName -eq 'SD') {
-                    "root=/dev/mmcblk0p2 rootfstype=ext4 rootwait quiet osmcdev=rbp1" | Set-Content -Path "$destination/cmdline.txt" -Force
+                    "root=LABEL=STORAGE rootfstype=ext4 rootwait quiet osmcdev=rbp1" | Set-Content -Path "$destination/cmdline.txt" -Force
                 } else {
-                    "root=/dev/sda1 rootfstype=ext4 rootwait quiet osmcdev=rbp1" | Set-Content -Path "$destination/cmdline.txt" -Force
+                    "root=LABEL=STORAGE rootfstype=ext4 rootwait quiet osmcdev=rbp1" | Set-Content -Path "$destination/cmdline.txt" -Force
                 }
             }
 

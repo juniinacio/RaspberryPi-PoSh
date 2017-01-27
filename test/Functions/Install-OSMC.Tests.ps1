@@ -65,7 +65,7 @@ InModuleScope RaspberryPi-PoSh {
                 Test-Path -Path "$mountpoint/cmdline.txt" -PathType Leaf | Should Be $true
                 Test-Path -Path "$mountpoint/config.txt" -PathType Leaf | Should Be $true
 
-                "$mountpoint/cmdline.txt" | Should Contain "^root=/dev/mmcblk0p2 rootfstype=ext4 rootwait quiet osmcdev=rbp1$"
+                "$mountpoint/cmdline.txt" | Should Contain "^root=LABEL=STORAGE rootfstype=ext4 rootwait quiet osmcdev=rbp1$"
 
                 "$mountpoint/config.txt" | Should Contain "^  arm_freq=850$"
                 "$mountpoint/config.txt" | Should Contain "^  core_freq=375$"
@@ -105,7 +105,7 @@ InModuleScope RaspberryPi-PoSh {
                 Test-Path -Path "$mountpoint/cmdline.txt" -PathType Leaf | Should Be $true
                 Test-Path -Path "$mountpoint/config.txt" -PathType Leaf | Should Be $true
 
-                "$mountpoint/cmdline.txt" | Should Contain "^root=/dev/mmcblk0p2 rootfstype=ext4 rootwait quiet osmcdev=rbp1$"
+                "$mountpoint/cmdline.txt" | Should Contain "^root=LABEL=STORAGE rootfstype=ext4 rootwait quiet osmcdev=rbp1$"
 
                 "$mountpoint/config.txt" | Should Contain "^  arm_freq=1000$"
                 "$mountpoint/config.txt" | Should Contain "^  core_freq=500$"
@@ -206,7 +206,7 @@ InModuleScope RaspberryPi-PoSh {
                 Test-Path -Path "$mountpoint/cmdline.txt" -PathType Leaf | Should Be $true
                 Test-Path -Path "$mountpoint/config.txt" -PathType Leaf | Should Be $true
 
-                "$mountpoint/cmdline.txt" | Should Contain "^root=/dev/mmcblk0p2 rootfstype=ext4 rootwait quiet osmcdev=rbp2$"
+                "$mountpoint/cmdline.txt" | Should Contain "^root=LABEL=STORAGE rootfstype=ext4 rootwait quiet osmcdev=rbp2$"
 
                 "$mountpoint/config.txt" | Should Contain "^  gpu_mem_1024=256$"
                 "$mountpoint/config.txt" | Should Contain "^  hdmi_ignore_cec_init=1$"
@@ -243,7 +243,7 @@ InModuleScope RaspberryPi-PoSh {
                 Test-Path -Path "$mountpoint/cmdline.txt" -PathType Leaf | Should Be $true
                 Test-Path -Path "$mountpoint/config.txt" -PathType Leaf | Should Be $true
 
-                "$mountpoint/cmdline.txt" | Should Contain "^root=/dev/mmcblk0p2 rootfstype=ext4 rootwait quiet osmcdev=rbp2$"
+                "$mountpoint/cmdline.txt" | Should Contain "^root=LABEL=STORAGE rootfstype=ext4 rootwait quiet osmcdev=rbp2$"
 
                 "$mountpoint/config.txt" | Should Contain "^  gpu_mem_1024=320$"
                 "$mountpoint/config.txt" | Should Contain "^  hdmi_ignore_cec_init=1$"
