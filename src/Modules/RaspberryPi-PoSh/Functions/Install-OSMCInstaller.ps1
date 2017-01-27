@@ -94,6 +94,8 @@ function Install-OSMCInstaller {
     
     begin {
         try {
+            Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
+
             $SD = [DeviceService]::GetDevice($SDDevicePath)
             if ($SD -eq $null) {
                 throw "Cannot find device '$SDDevicePath' because it does not exist."
@@ -134,6 +136,8 @@ function Install-OSMCInstaller {
     
     process {
         try {
+            [string]$pb = ($PSBoundParameters | Format-Table -AutoSize | Out-String).TrimEnd()
+            Write-Verbose "[PROCESS] PSBoundparameters: `n$($pb.split("`n").Foreach({"$("`t"*2)$_"}) | Out-String) `n"
             
             $source = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
             if (Test-Path -Path $source -PathType Container) {
@@ -215,6 +219,8 @@ function Install-OSMCInstaller {
     
     end {
         try {
+            Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+            
             $destination = Join-Path -Path '/tmp' -ChildPath $('{0}' -f (New-Guid).ToString())
             if (Test-Path -Path $destination -PathType Container) {
                 Remove-Item -Path $destination -Recurse

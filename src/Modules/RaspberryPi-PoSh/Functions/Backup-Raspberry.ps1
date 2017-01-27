@@ -54,8 +54,15 @@ function Backup-Raspberry {
         $ExcludeFilePath
     )
 
+    begin {
+        Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
+    } # begin
+
     process {
         try {
+            [string]$pb = ($PSBoundParameters | Format-Table -AutoSize | Out-String).TrimEnd()
+            Write-Verbose "[PROCESS] PSBoundparameters: `n$($pb.split("`n").Foreach({"$("`t"*2)$_"}) | Out-String) `n" 
+            
             if (-not $PSBoundParameters.ContainsKey('FilePath')) {
                 $FilePath = Join-Path -Path $Env:HOME -ChildPath ('Backups/Kodi-{0}.tar' -f (Get-Date -format 'yyyyMMddHHmmss'))
             }
@@ -114,4 +121,8 @@ function Backup-Raspberry {
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
     } # process
+
+    end {
+        Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+    } # end
 }

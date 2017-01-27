@@ -55,6 +55,8 @@ function Install-Plugin {
 
     begin {
         try {
+            Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"
+
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
                 $devicePath = $SDDevicePath
                 $index = 1
@@ -110,6 +112,9 @@ function Install-Plugin {
 
     process {
         try {
+            [string]$pb = ($PSBoundParameters | Format-Table -AutoSize | Out-String).TrimEnd()
+            Write-Verbose "[PROCESS] PSBoundparameters: `n$($pb.split("`n").Foreach({"$("`t"*2)$_"}) | Out-String) `n" 
+
             foreach ($path in $FilePath) {
                 try {
                     # if (
@@ -139,6 +144,8 @@ function Install-Plugin {
 
     end {
         try {
+            Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+            
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
                 $devicePath = $SDDevicePath
                 $index = 1
