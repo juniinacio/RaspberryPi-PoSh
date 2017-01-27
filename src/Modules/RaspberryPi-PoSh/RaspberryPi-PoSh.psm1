@@ -505,7 +505,7 @@ function ExecCmd {
     $output = & $Command @ArgumentsList 2>&1
 
     if ($LastExitCode -ne 0) {
-        $e = New-Object System.InvalidOperationException -ArgumentList $output.Exception.Message
+        $e = New-Object -TypeName 'System.InvalidOperationException' -ArgumentList $output.Exception.Message
         throw $e
     } else {
         [Logger]::LogMessage("LastExitCode: $LastExitCode", [EventSeverity]::Verbose)
