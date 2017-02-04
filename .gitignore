@@ -1,0 +1,8 @@
+# Artifacts #
+#############
+artifacts/*.xml
+artifacts/*.json
+
+# Scripts #
+###########
+git-*.sh
