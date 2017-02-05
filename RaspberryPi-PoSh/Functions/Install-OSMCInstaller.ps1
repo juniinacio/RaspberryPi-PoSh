@@ -1,3 +1,6 @@
+Set-StrictMode -Version Latest
+Set-PSDebug -Strict
+
 <#
 .SYNOPSIS
     Installs OSMC installer.

@@ -1,3 +1,6 @@
+Set-StrictMode -Version Latest
+Set-PSDebug -Strict
+
 <#
 .SYNOPSIS
     Creates a backup of the Kodi installation on the Raspberry Pi.
@@ -28,16 +31,16 @@ function Backup-Raspberry {
         [Parameter(Mandatory = $true, ParameterSetName='SD')]
         [ValidateNotNullOrEmpty()]
         [Alias('SDDevice', 'SD')]
-        [string] 
+        [string]
         $SDDevicePath,
 
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
         [Parameter(Mandatory = $true, ParameterSetName='USB')]
         [ValidateNotNullOrEmpty()]
         [Alias('USBDevice', 'USB')]
-        [string] 
+        [string]
         $USBDevicePath,
-        
+
         [Parameter(Mandatory = $false, ParameterSetName='SD')]
         [Parameter(Mandatory = $false, ParameterSetName='USB')]
         [Alias('Path')]
@@ -61,8 +64,8 @@ function Backup-Raspberry {
     process {
         try {
             [string]$pb = ($PSBoundParameters | Format-Table -AutoSize | Out-String).TrimEnd()
-            Write-Verbose "[PROCESS] PSBoundparameters: `n$($pb.split("`n").Foreach({"$("`t"*2)$_"}) | Out-String) `n" 
-            
+            Write-Verbose "[PROCESS] PSBoundparameters: `n$($pb.split("`n").Foreach({"$("`t"*2)$_"}) | Out-String) `n"
+
             if (-not $PSBoundParameters.ContainsKey('FilePath')) {
                 $FilePath = Join-Path -Path $Env:HOME -ChildPath ('Backups/Kodi-{0}.tar' -f (Get-Date -format 'yyyyMMddHHmmss'))
             }
@@ -117,7 +120,7 @@ function Backup-Raspberry {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
             Write-Verbose "ScriptName: $($_.InvocationInfo.ScriptName)"
-            
+
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
     } # process

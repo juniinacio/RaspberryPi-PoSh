@@ -1,3 +1,6 @@
+Set-StrictMode -Version Latest
+Set-PSDebug -Strict
+
 <#
 .SYNOPSIS
     Installs Kodi addons.
@@ -27,16 +30,16 @@ function Install-Plugin {
         [Parameter(Mandatory = $true, ParameterSetName='SD')]
         [ValidateNotNullOrEmpty()]
         [Alias('SD')]
-        [string] 
+        [string]
         $SDDevicePath,
 
         [ArgumentCompleter({$wordToComplete = $args[2]; [DeviceService]::GetDevices($false) | Where-Object {$_.GetPath() -like "$wordToComplete*"} | Select-Object -ExpandProperty Path | Sort-Object})]
         [Parameter(Mandatory = $true, ParameterSetName='USB')]
         [ValidateNotNullOrEmpty()]
         [Alias('USB')]
-        [string] 
+        [string]
         $USBDevicePath,
-        
+
         [Parameter(Mandatory = $false, ParameterSetName='SD', ValueFromPipeline = $true)]
         [Parameter(Mandatory = $false, ParameterSetName='USB', ValueFromPipeline = $true)]
         [Alias('Path')]
@@ -82,7 +85,7 @@ function Install-Plugin {
             New-Item -Path $destination -ItemType Directory | Out-Null
 
             $device = [DeviceService]::GetDevice($devicePath)
-            
+
             [Utility]::Mount($device.GetPartition($index), $destination)
 
             if (Test-Path -Path "$destination/.kodi/addons" -PathType Container) {
@@ -113,7 +116,7 @@ function Install-Plugin {
     process {
         try {
             [string]$pb = ($PSBoundParameters | Format-Table -AutoSize | Out-String).TrimEnd()
-            Write-Verbose "[PROCESS] PSBoundparameters: `n$($pb.split("`n").Foreach({"$("`t"*2)$_"}) | Out-String) `n" 
+            Write-Verbose "[PROCESS] PSBoundparameters: `n$($pb.split("`n").Foreach({"$("`t"*2)$_"}) | Out-String) `n"
 
             foreach ($path in $FilePath) {
                 try {
@@ -137,7 +140,7 @@ function Install-Plugin {
             Write-Verbose "ScriptStackTrace: $($_.ScriptStackTrace.ToString())"
             Write-Verbose "ScriptLineNumber: $($_.InvocationInfo.ScriptLineNumber)"
             Write-Verbose "ScriptName: $($_.InvocationInfo.ScriptName)"
-            
+
             $PSCmdlet.ThrowTerminatingError($_)
         } # try
     } # process
@@ -145,7 +148,7 @@ function Install-Plugin {
     end {
         try {
             Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
-            
+
             if ($PSCmdlet.ParameterSetName -eq 'SD') {
                 $devicePath = $SDDevicePath
                 $index = 1
@@ -171,7 +174,7 @@ function Install-Plugin {
             New-Item -Path $destination -ItemType Directory | Out-Null
 
             $device = [DeviceService]::GetDevice($devicePath)
-            
+
             [Utility]::Mount($device.GetPartition($index), $destination)
 
             $addonPath = "$destination/$addonPath"

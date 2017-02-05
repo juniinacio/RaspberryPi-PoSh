@@ -1,3 +1,6 @@
+Set-StrictMode -Version Latest
+Set-PSDebug -Strict
+
 #----------------------------------------------------------------------------------------------------------------------
 # Environment variables
 if (-not (Test-Path -Path '/etc/os-release' -PathType Leaf)) {
