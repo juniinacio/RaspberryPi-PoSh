@@ -125,7 +125,8 @@ class DeviceService {
 
             $device = [Device]::new($blockdevice.name, $blockdevice.fstype, $blockdevice.size, $blockdevice.mountpoint, $blockdevice.type, $blockdevice.label, $blockdevice.hotplug)
 
-	    $childrens = $hashes | Where-Object {$_.name -match ("\A{0}p?\d\z" -f $blockdevice.name)} | ForEach-Object {[PSCustomObject]$_} | Sort-Object -Property name
+            # Need to convert the hashtable to an object so that we can sort the collection
+            $childrens = $hashes | Where-Object {$_.name -match ("\A{0}p?\d\z" -f $blockdevice.name)} | ForEach-Object {[PSCustomObject]$_} | Sort-Object -Property name
             foreach ($children in $childrens) {
                 $part = [Device]::new($children.name, $children.fstype, $children.size, $children.mountpoint, $children.type, $children.label, $children.hotplug)
 
