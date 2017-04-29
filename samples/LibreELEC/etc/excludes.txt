@@ -5,6 +5,7 @@
 ./.kodi/temp
 ./.kodi/addons/packages/*
 ./.kodi/userdata/addon_data/service.libreelec.settings
+./.kodi/userdata/addon_data/script.*
 ./.kodi/userdata/Database/CDDB
 ./.kodi/userdata/Database/ADSP*.db
 ./.kodi/userdata/Database/Epg*.db
